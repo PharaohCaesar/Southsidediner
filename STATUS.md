@@ -94,8 +94,10 @@ Built and verified locally against the Akelt mock env: tsc + eslint clean; **7/7
 - **"Family", not names** — the owners are never named on the site (JP's call).
 - Guest checks + five-dish hero + phone hero layout (see Effects).
 
-**Not yet:** custom domain (southsidediner.net is on Webflow), `AKELT_INBOX_KEY` on Vercel (after the
-Akelt inbox ships: Admin → Inbox → Create website key), Resend env (`RESEND_API_KEY`, `RESEND_FROM`,
+✅ **Inbox live (2026-10-26):** Akelt PR #32 merged, migration 0015 applied, `AKELT_INBOX_KEY` set on Vercel
+(JP). Forms now land in Akelt Admin → Inbox and in email.
+
+**Not yet:** custom domain (southsidediner.net is on Webflow), Resend env (`RESEND_API_KEY`, `RESEND_FROM`,
 `LEADS_TO`; JP reports these are set), `NEXT_PUBLIC_AKELT_ORIGIN` check on Vercel,
 Google Business Profile hours check.
 
