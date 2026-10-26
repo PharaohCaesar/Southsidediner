@@ -28,59 +28,6 @@ export const SITE = {
 
 export const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-/** The seven signature dishes from the jukebox selector. Photos live in /public/photos. */
-export const SIGNATURES = [
-  {
-    slug: 'corned-beef-hash-omelette',
-    name: 'Corned Beef Hash Omelette',
-    blurb: 'Our house-made corned beef hash rolled into a four-egg omelette, topped with American cheese.',
-    photo: '/photos/corned-beef-hash-omelette.jpg',
-    track: 'A1',
-  },
-  {
-    slug: 'bagel-sandwich',
-    name: 'Bagel Sandwich',
-    blurb: 'Eggs, cheese and peppered bacon on a toasted bagel, served with home fries.',
-    photo: '/photos/bagel-sandwich.jpg',
-    track: 'A2',
-  },
-  {
-    slug: 'potato-pancake-combo',
-    name: 'Potato Pancake Combo',
-    blurb: 'Two homemade potato pancakes, two eggs, two peppered bacon and two sausage links.',
-    photo: '/photos/potato-pancake-combo.jpg',
-    track: 'A3',
-  },
-  {
-    slug: 'breakfast-burrito',
-    name: 'Breakfast Burrito',
-    blurb: 'Peppered bacon, diced sausage, home fries and scrambled eggs rolled in a tortilla, smothered in house sausage gravy and cheddar.',
-    photo: '/photos/breakfast-burrito.jpg',
-    track: 'B1',
-  },
-  {
-    slug: 'breakfast-tacos',
-    name: 'Breakfast Tacos',
-    blurb: 'Chorizo, grilled pineapple, pepper jack, fried egg, red onion, cilantro and homemade chipotle sauce.',
-    photo: '/photos/breakfast-tacos.jpg',
-    track: 'B2',
-  },
-  {
-    slug: 'chicken-n-waffles',
-    name: "Chicken n' Waffles",
-    blurb: 'Belgian waffle with homemade glaze and Sriracha, breaded chicken and powdered sugar.',
-    photo: '/photos/chicken-n-waffles.jpg',
-    track: 'B3',
-  },
-  {
-    slug: 'gyro',
-    name: 'Gyro',
-    blurb: 'Hand-shaven seasoned gyro meat with homemade garlicky tzatziki, red onion and tomato.',
-    photo: '/photos/gyro.jpg',
-    track: 'C1',
-  },
-] as const;
-
 /** Awards. Source: the Southside press archive (Dropbox, "12-Frame Newsprint Collection"). */
 export const AWARDS = [
   {
@@ -181,6 +128,64 @@ export const GRIDDLE = [
   { slug: 'gyro', spot: [0.62, 0.45], dish: 'Gyro Hash', line: 'Hand-shaved gyro meat on crispy hash browns with tomatoes and two eggs.' },
   { slug: 'chorizo', spot: [0.64, 0.36], dish: 'Chorizo Hash', line: 'Chorizo, crispy hash browns, two eggs, jalapeño and cilantro.' },
 ] as const;
+
+/**
+ * The homepage photo gallery: real plates from the kitchen. `menu` is the dish's exact name on the
+ * Akelt menu (its live price is looked up by it); null = not a single menu item. First 12 = the
+ * opening spread of "All". w/h are the file's real pixel size (masonry layout, no layout shift).
+ */
+export const GALLERY_CATEGORIES = [
+  { key: 'all', label: 'All' },
+  { key: 'breakfast', label: 'Breakfast' },
+  { key: 'hashes', label: 'Hashes & tacos' },
+  { key: 'benedicts', label: 'Benedicts' },
+  { key: 'lunch', label: 'Lunch' },
+] as const;
+
+export type GalleryCategory = Exclude<(typeof GALLERY_CATEGORIES)[number]['key'], 'all'>;
+
+export const GALLERY: { src: string; label: string; menu: string | null; cat: GalleryCategory; w: number; h: number }[] = [
+  { src: '/photos/corned-beef-hash.jpg', label: 'Corned Beef Hash', menu: 'Corned Beef Hash', cat: 'hashes', w: 889, h: 900 },
+  { src: '/photos/chicken-n-waffles.jpg', label: "Chicken n' Waffles", menu: "Chicken n' Waffles", cat: 'breakfast', w: 960, h: 1200 },
+  { src: '/photos/cheeseburger.jpg', label: 'Cheeseburger', menu: 'Cheeseburger', cat: 'lunch', w: 1200, h: 1200 },
+  { src: '/photos/chorizo-hash.jpg', label: 'Chorizo Hash', menu: 'Chorizo Hash', cat: 'hashes', w: 1189, h: 1200 },
+  { src: '/photos/pancakes.jpg', label: 'Blueberry Pancakes', menu: 'Pancakes', cat: 'breakfast', w: 1175, h: 915 },
+  { src: '/photos/reuben-tacos.jpg', label: 'Reuben Tacos', menu: 'Reuben Tacos', cat: 'hashes', w: 1200, h: 1180 },
+  { src: '/photos/pastrami-benedict.jpg', label: 'Pastrami Benedict', menu: 'Pastrami Benedict', cat: 'benedicts', w: 1200, h: 1053 },
+  { src: '/photos/athenian-breakfast.jpg', label: 'Athenian Breakfast', menu: 'Athenian Breakfast', cat: 'breakfast', w: 1200, h: 800 },
+  { src: '/photos/southside-reuben.jpg', label: 'Southside Reuben', menu: 'Southside Reuben', cat: 'lunch', w: 1200, h: 800 },
+  { src: '/photos/breakfast-quesadilla.jpg', label: 'Breakfast Quesadilla', menu: 'Breakfast Quesadilla', cat: 'breakfast', w: 960, h: 1200 },
+  { src: '/photos/gyro.jpg', label: 'Gyro', menu: 'Gyro', cat: 'lunch', w: 1200, h: 896 },
+  { src: '/photos/french-toast.jpg', label: 'French Toast', menu: 'French Toast', cat: 'breakfast', w: 1200, h: 800 },
+  { src: '/photos/gyro-hash.jpg', label: 'Gyro Hash', menu: 'Gyro Hash', cat: 'hashes', w: 1188, h: 1200 },
+  { src: '/photos/barbacoa-hash.jpg', label: 'Barbacoa Hash', menu: 'Barbacoa Hash', cat: 'hashes', w: 1187, h: 1200 },
+  { src: '/photos/breakfast-tacos.jpg', label: 'Breakfast Tacos', menu: 'Breakfast Tacos', cat: 'hashes', w: 1200, h: 800 },
+  { src: '/photos/gyro-tacos.jpg', label: 'Gyro Tacos', menu: 'Gyro Tacos', cat: 'hashes', w: 1200, h: 676 },
+  { src: '/photos/barbacoa-tacos.jpg', label: 'Barbacoa Tacos', menu: 'Barbacoa Tacos', cat: 'hashes', w: 1200, h: 900 },
+  { src: '/photos/benedict-florentine.jpg', label: 'Eggs Benedict Florentine', menu: 'Eggs Benedict Florentine', cat: 'benedicts', w: 1200, h: 1200 },
+  { src: '/photos/spartan-benedict.jpg', label: 'Spartan Benedict', menu: 'Spartan Benedict', cat: 'benedicts', w: 1200, h: 676 },
+  { src: '/photos/corned-beef-hash-omelette.jpg', label: 'Corned Beef Hash Omelette', menu: 'Corned Beef Hash Omelette', cat: 'breakfast', w: 1200, h: 800 },
+  { src: '/photos/potato-pancake-combo.jpg', label: 'Potato Pancake Combo', menu: 'Potato Pancake Combo', cat: 'breakfast', w: 1200, h: 800 },
+  { src: '/photos/corned-beef-stacker.jpg', label: 'Corned Beef Stacker', menu: 'Corned Beef Stacker', cat: 'breakfast', w: 1200, h: 800 },
+  { src: '/photos/breakfast-burrito.jpg', label: 'Breakfast Burrito', menu: 'Breakfast Burrito', cat: 'breakfast', w: 1200, h: 800 },
+  { src: '/photos/crazy-8.jpg', label: 'Crazy 8', menu: 'Crazy 8', cat: 'breakfast', w: 1200, h: 715 },
+  { src: '/photos/big-country.jpg', label: 'Big Country', menu: 'Big Country', cat: 'breakfast', w: 1200, h: 806 },
+  { src: '/photos/bagel-sandwich.jpg', label: 'Bagel Sandwich', menu: 'Bagel Sandwich', cat: 'breakfast', w: 1200, h: 800 },
+  { src: '/photos/country-fried-steak.jpg', label: 'Country Fried Steak & Eggs', menu: 'Country Fried Steak & Eggs', cat: 'breakfast', w: 1200, h: 800 },
+  { src: '/photos/ham-steak.jpg', label: 'Ham Steak & Eggs', menu: 'Ham Steak & Eggs', cat: 'breakfast', w: 1200, h: 800 },
+  { src: '/photos/corned-beef-and-eggs.jpg', label: 'Corned Beef & Eggs', menu: 'Corned Beef & Eggs', cat: 'breakfast', w: 1200, h: 800 },
+  { src: '/photos/biscuits-and-gravy.jpg', label: 'Biscuits & Gravy', menu: 'Biscuits & Gravy', cat: 'breakfast', w: 1200, h: 676 },
+  { src: '/photos/gyro-omelette.jpg', label: 'Gyro Omelette', menu: null, cat: 'breakfast', w: 1200, h: 692 },
+  { src: '/photos/spread.jpg', label: 'The Saturday spread', menu: null, cat: 'breakfast', w: 1800, h: 1200 },
+  { src: '/photos/clevelander.jpg', label: 'Clevelander', menu: 'Clevelander', cat: 'lunch', w: 1200, h: 800 },
+  { src: '/photos/downtowner.jpg', label: 'Downtowner', menu: 'Downtowner', cat: 'lunch', w: 1200, h: 800 },
+  { src: '/photos/reuben.jpg', label: 'Reuben', menu: 'Reuben', cat: 'lunch', w: 667, h: 1000 },
+  { src: '/photos/greek-burger.jpg', label: 'Greek Burger', menu: 'Greek Burger', cat: 'lunch', w: 1200, h: 800 },
+  { src: '/photos/cajun-bbq-chicken-wrap.jpg', label: 'Cajun BBQ Chicken Wrap', menu: 'Cajun BBQ Chicken Wrap', cat: 'lunch', w: 1200, h: 800 },
+  { src: '/photos/chicken-ranch-wrap.jpg', label: 'Chicken Ranch Wrap', menu: 'Chicken Ranch Wrap', cat: 'lunch', w: 1200, h: 676 },
+  { src: '/photos/chicken-salad-wrap.jpg', label: 'Chicken Salad Wrap', menu: 'Chicken Salad Wrap', cat: 'lunch', w: 1200, h: 676 },
+  { src: '/photos/piggy-dog.jpg', label: 'Piggy Dog', menu: 'Piggy Dog', cat: 'lunch', w: 968, h: 1200 },
+];
 
 export const JOBS = {
   positions: ['Server', 'Cook', 'Busser', 'Dishwasher / Prep Cook'],

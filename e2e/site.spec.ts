@@ -40,6 +40,30 @@ test.describe('southsidediner.net', () => {
     await expect(tag).toHaveCount(0);
   });
 
+  test('From the kitchen: filter, open the viewer, step through, order, close', async ({ page }) => {
+    await page.goto('/');
+    const photos = page.getByRole('list', { name: 'Photos' }).getByRole('button');
+    await expect(photos).toHaveCount(12); // the opening spread
+    await page.getByRole('button', { name: /See all 40 plates/ }).click();
+    await expect(photos).toHaveCount(40);
+
+    await page.getByRole('button', { name: 'Benedicts', exact: true }).click();
+    await expect(photos).toHaveCount(3);
+    await photos.first().click();
+    const viewer = page.getByRole('dialog');
+    await expect(viewer).toBeVisible();
+    await expect(viewer).toContainText('Pastrami Benedict');
+    await expect(viewer).toContainText('1 / 3');
+    await page.keyboard.press('ArrowRight');
+    await expect(viewer).toContainText('Eggs Benedict Florentine');
+    await page.keyboard.press('ArrowLeft');
+    await page.keyboard.press('ArrowLeft'); // wraps around
+    await expect(viewer).toContainText('Spartan Benedict');
+    await expect(viewer.getByRole('link', { name: /Order/ })).toHaveAttribute('data-akelt-order', '/');
+    await page.keyboard.press('Escape');
+    await expect(viewer).toBeHidden();
+  });
+
   test('Our story links to In the news, which has the awards, video and clippings', async ({ page }) => {
     await page.goto('/story');
     await expect(page.getByRole('heading', { name: /Best Diner 2016/ })).toBeVisible();
@@ -52,13 +76,12 @@ test.describe('southsidediner.net', () => {
     expect(await page.locator('main a[href*="youtube.com"]').count()).toBe(3);
   });
 
-  test('home: story, jukebox, visit band with live open state, and receipt all render', async ({ page }) => {
+  test('home: story, gallery, visit band with live open state, and receipt all render', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('#board-h')).toHaveCount(0); // the split-flap board is gone
     const visit = page.locator('section', { has: page.locator('#visit-h') });
     await expect(visit.getByRole('status')).toContainText(/Open now|Closed|Opens|8 AM/);
-    await page.getByRole('button', { name: /Breakfast Tacos/ }).click();
-    await expect(page.getByRole('heading', { level: 3, name: 'Breakfast Tacos' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'From the kitchen' })).toBeVisible();
     await expect(page.getByRole('heading', { name: /A real diner/ })).toBeVisible();
     await page.getByLabel('Receipt with address and hours').scrollIntoViewIfNeeded();
     await expect(page.getByLabel('Receipt with address and hours')).toContainText('THANK YOU, COME AGAIN', { timeout: 8000 });

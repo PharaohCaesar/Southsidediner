@@ -21,8 +21,8 @@ The new southsidediner.net: a 1950s/60s diner experience that replaces the 2018 
 Ordering, pop-ups, "closed today" and the menu all come from **Akelt** (the ordering platform in
 the repo root) via `/embed.js`, `/api/site` and `/api/menu` — the site itself has no database.
 
-Pilot facts live in ONE file: `src/lib/site.ts` (address, phone, hours, socials, signature dishes,
-press, job perks). Components never hardcode them.
+Pilot facts live in ONE file: `src/lib/site.ts` (address, phone, hours, socials, the gallery
+photos, press, job perks). Components never hardcode them.
 
 ## Stack
 
@@ -33,7 +33,7 @@ UnifrakturMaguntia = press-archive masthead).
 
 ## Routes
 
-`/` (griddle hero → story + awards + press → jukebox dishes → mint visit band with the live open state
+`/` (griddle hero → story + awards + press → "From the kitchen" photo gallery → mint visit band with the live open state
 → receipt footer; the split-flap board was removed 2026-10-26 at JP's request) · `/menu` (Akelt `/api/menu`, prices never stale, every dish opens
 the ordering popup) · `/story` · `/press` (In the news: newsprint archive of awards, On camera, In print, Stacker) · `/jobs` (application → `/api/jobs`) · `/contact` (map, hours,
 form → `/api/contact`) · `sitemap.xml` · `robots.txt`. `/gallery` → `/story`, `/reservation` → `/contact`.
@@ -60,7 +60,13 @@ form → `/api/contact`) · `sitemap.xml` · `robots.txt`. `/gallery` → `/stor
 - **Phone action bar** `action-bar.tsx`: Call · Order online · Directions pinned to the bottom on
   phones, slides up after the hero; while it's up the nav hides its own Order button
   (`html[data-bar-up]`). Footer is padded so the bar never covers it. Not shown from `md` up.
-- **Jukebox** `jukebox.tsx`: 7 signature dishes as title cards, 45 spins, dish swings in.
+- **"From the kitchen" gallery** `home/kitchen-gallery.tsx` (server: live prices from Akelt `/api/menu`,
+  matched by exact menu name) + `photo-gallery.tsx` (client): 40 real plates (`GALLERY` in site.ts, with
+  real pixel sizes), filter chips (All / Breakfast / Hashes & tacos / Benedicts / Lunch), masonry columns,
+  first 12 then "See all", mint guest-check price tags. Tap → full-screen `<dialog>` viewer (arrows,
+  swipe, ←/→, Esc, pauses Lenis via `window.__lenis`) with the price and "Order this", which closes the
+  viewer and opens the Akelt ordering popup (a modal dialog would otherwise sit on top of it). Replaced
+  the jukebox (2026-10-26, JP's call).
 - **Neon** utilities (`.neon`, `.neon-tube`, flicker), **checkerboard floor** in perspective,
   **chrome strips** with a glint, **guest checks** modeled on the restaurant's real FMP 2-part pads (`components/guest-check.tsx`,
   `.guest-check`: mint sheet, blue "Guest Check", Date/Table/Guests/Server boxes, red number, course

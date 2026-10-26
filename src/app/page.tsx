@@ -1,5 +1,5 @@
 import { GriddleHero } from '@/components/hero/griddle-hero';
-import { Jukebox } from '@/components/jukebox';
+import { KitchenGallery } from '@/components/home/kitchen-gallery';
 import { StoryStrip } from '@/components/home/story-strip';
 import { ChromeDivider } from '@/components/chrome-divider';
 import { VisitBand } from '@/components/home/visit-band';
@@ -13,7 +13,7 @@ export default function HomePage() {
       <ChromeDivider />
       <StoryStrip />
       <ChromeDivider />
-      <Jukebox />
+      <KitchenGallery />
       <ChromeDivider />
       <VisitBand />
     </>
