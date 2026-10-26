@@ -23,6 +23,10 @@ const nextConfig: NextConfig = {
       // Old Webflow URLs.
       { source: '/reservation', destination: '/contact', permanent: true },
       { source: '/gallery', destination: '/story', permanent: true },
+      // Template leftovers Google still has indexed (sitemap.xml on the old site).
+      { source: '/blog/:path*', destination: '/story', permanent: true },
+      { source: '/parties', destination: '/contact', permanent: true },
+      { source: '/template-information/:path*', destination: '/', permanent: true },
     ];
   },
 };

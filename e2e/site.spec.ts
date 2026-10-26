@@ -88,8 +88,14 @@ test.describe('southsidediner.net', () => {
   });
 
   test('old Webflow URLs redirect; sitemap, robots and structured data exist', async ({ request, page }) => {
-    const r = await request.get('/gallery', { maxRedirects: 0 });
-    expect([301, 308]).toContain(r.status());
+    for (const [from, to] of [
+      ['/gallery', '/story'], ['/reservation', '/contact'], ['/parties', '/contact'],
+      ['/blog/we-have-updated-our-overall-menu-enjoy', '/story'], ['/template-information/licensing', '/'],
+    ]) {
+      const r = await request.get(from, { maxRedirects: 0 });
+      expect([301, 308], from).toContain(r.status());
+      expect(new URL(r.headers().location, 'http://x').pathname, from).toBe(to);
+    }
     expect((await request.get('/sitemap.xml')).ok()).toBe(true);
     expect((await request.get('/robots.txt')).ok()).toBe(true);
     await page.goto('/');
