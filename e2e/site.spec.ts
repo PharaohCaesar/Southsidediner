@@ -69,6 +69,38 @@ test.describe('southsidediner.net', () => {
     await expect(viewer).toBeHidden();
   });
 
+  test('phone Back closes the photo viewer and the ordering popup, never the site', async ({ browser }) => {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+    const page = await ctx.newPage();
+    await page.goto('about:blank'); // stands in for Google / a QR code: nothing else behind the site
+    await page.goto('/');
+    await page.waitForFunction(() => (window as unknown as { Akelt?: unknown }).Akelt, null, { timeout: 20_000 });
+    const plate = page.getByRole('button', { name: /^Pastrami Benedict.*view larger$/ });
+    const viewer = page.getByRole('dialog', { name: 'Pastrami Benedict' });
+    const ordering = page.getByRole('dialog', { name: /Order online from/ });
+
+    // Back closes the viewer and stays on the page.
+    await plate.click();
+    await expect(viewer).toBeVisible();
+    await page.goBack();
+    await expect(viewer).toBeHidden();
+    expect(new URL(page.url()).pathname).toBe('/');
+
+    // "Order this" → the ordering popup; Back closes it and stays on the site.
+    await plate.click();
+    await viewer.getByRole('link', { name: /Order/ }).click();
+    await expect(viewer).toBeHidden();
+    await expect(ordering).toBeVisible();
+    await page.goBack();
+    await expect(ordering).toBeHidden();
+    expect(new URL(page.url()).pathname).toBe('/');
+
+    // Nothing left behind: one more Back leaves as it normally would.
+    await page.goBack();
+    expect(page.url()).toBe('about:blank');
+    await ctx.close();
+  });
+
   test('Our story links to In the news, which has the awards, video and clippings', async ({ page }) => {
     await page.goto('/story');
     await expect(page.getByRole('heading', { name: /Best Diner 2016/ })).toBeVisible();

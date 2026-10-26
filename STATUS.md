@@ -68,7 +68,8 @@ email (Resend), success when either lands, 503 only when neither is configured �
   off-screen / reduced motion; takes mouse drags (a drag never counts as a tap), swipes, trackpad
   scrolls and ‹ › arrows. Mint guest-check price tags. Tap → full-screen `<dialog>` viewer (arrows,
   swipe, ←/→, Esc, pauses Lenis via `window.__lenis`) with the price and "Order this", which closes the
-  viewer and opens the Akelt ordering popup. Replaced the jukebox, then the masonry grid (JP, 2026-10-26).
+  viewer and opens the Akelt ordering popup. **Back closes the viewer** (it's a `__viewer` history entry;
+  "Order this" drops that entry first, then opens ordering, whose popup has its own Back entry). Replaced the jukebox, then the masonry grid (JP, 2026-10-26).
 - **Neon** utilities (`.neon`, `.neon-tube`, flicker), **checkerboard floor** in perspective,
   **chrome strips** with a glint, **guest checks** modeled on the restaurant's real FMP 2-part pads (`components/guest-check.tsx`,
   `.guest-check`: mint sheet, blue "Guest Check", Date/Table/Guests/Server boxes, red number, course
@@ -122,4 +123,7 @@ Google Business Profile hours check.
   `src/lib/site.ts`; only components and types come from client modules.
 - **Never paraphrase inside quotation marks.** Press quotes are verbatim from the clippings; two
   invented "quotes" had to be pulled. If it isn't in the article, it isn't in quotes.
+- **Every full-screen overlay needs a history entry.** Phone Back otherwise skips it and leaves the site
+  (closing the browser when the site was the tab's first page). Viewer: `photo-gallery.tsx`; ordering
+  popup: Akelt `widget-script.ts`. Two overlays must not overlap their entries: drop one, then push the next.
 - Always use absolute paths in scripted file writes; a `cd` that silently fails sends files to the wrong project.

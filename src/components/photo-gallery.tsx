@@ -16,6 +16,7 @@ export type GalleryItem = {
 
 const SPEED = 32; // px per second while revolving
 const RESUME_AFTER = 2500; // ms of stillness after a touch, drag or arrow before it revolves again
+const isViewerEntry = () => Boolean((window.history.state as { __viewer?: number } | null)?.__viewer);
 const CAT_LABEL = Object.fromEntries(GALLERY_CATEGORIES.map((c) => [c.key, c.label])) as Record<string, string>;
 
 /**
@@ -33,6 +34,10 @@ export function PhotoGallery({ items }: { items: GalleryItem[] }) {
   const drag = useRef<{ x: number; left: number; moved: boolean } | null>(null);
   const openRef = useRef(open);
   useEffect(() => { openRef.current = open; }, [open]);
+  // Back button: the open viewer is a history entry of its own, so phone/browser Back closes
+  // it instead of leaving the site (and closing the browser for a visitor who came from Google).
+  const popped = useRef(false); // closed BY Back: the entry is already gone
+  const orderAfterClose = useRef(false); // "Order this": open ordering once the entry is gone
 
   // The revolve loop.
   useEffect(() => {
@@ -84,10 +89,39 @@ export function PhotoGallery({ items }: { items: GalleryItem[] }) {
     if (open != null && !d.open) {
       d.showModal();
       window.__lenis?.stop();
+      if (!isViewerEntry()) window.history.pushState({ __viewer: 1 }, ''); // Next keeps its router state alongside
     } else if (open == null && d.open) {
       d.close();
     }
   }, [open]);
+
+  useEffect(() => {
+    const onPop = () => {
+      if (openRef.current != null && !isViewerEntry()) {
+        popped.current = true;
+        setOpen(null);
+      }
+    };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
+
+  // Every way the viewer closes (✕, Esc, backdrop, Back, "Order this") ends here.
+  const onDialogClose = () => {
+    setOpen(null);
+    window.__lenis?.start();
+    const openOrdering = () => window.Akelt?.open('/');
+    if (!popped.current && isViewerEntry()) {
+      // Closed from the page: drop our history entry so the next Back leaves as usual. The
+      // ordering popup adds its own entry, so it waits until this Back has landed.
+      if (orderAfterClose.current) window.addEventListener('popstate', () => setTimeout(openOrdering, 0), { once: true });
+      window.history.back();
+    } else if (orderAfterClose.current) {
+      openOrdering();
+    }
+    popped.current = false;
+    orderAfterClose.current = false;
+  };
 
   const pauseFor = (ms = RESUME_AFTER) => { hold.current.until = performance.now() + ms; };
   const nudge = (dir: 1 | -1) => {
@@ -204,7 +238,7 @@ export function PhotoGallery({ items }: { items: GalleryItem[] }) {
         ref={dialog}
         data-lenis-prevent
         aria-label={open != null ? items[open].label : 'Photo'}
-        onClose={() => { setOpen(null); window.__lenis?.start(); }}
+        onClose={onDialogClose}
         onKeyDown={(e) => {
           if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
           if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
@@ -218,6 +252,12 @@ export function PhotoGallery({ items }: { items: GalleryItem[] }) {
             index={open}
             total={items.length}
             onClose={() => setOpen(null)}
+            onOrder={(e) => {
+              if (!window.Akelt) return; // ordering script not loaded: the plain link still works
+              e.preventDefault(); // the widget ignores prevented clicks; we open it after closing
+              orderAfterClose.current = true;
+              setOpen(null);
+            }}
             onStep={step}
           />
         )}
@@ -227,12 +267,13 @@ export function PhotoGallery({ items }: { items: GalleryItem[] }) {
 }
 
 function Viewer({
-  item, index, total, onClose, onStep,
+  item, index, total, onClose, onOrder, onStep,
 }: {
   item: GalleryItem;
   index: number;
   total: number;
   onClose: () => void;
+  onOrder: (e: React.MouseEvent<HTMLAnchorElement>) => void;
   onStep: (dir: 1 | -1) => void;
 }) {
   const swipeX = useRef<number | null>(null); // swipe left/right on the photo (touch)
@@ -293,8 +334,9 @@ function Viewer({
           href={SITE.akeltOrigin}
           data-akelt-order="/"
           data-bell
-          // Close the viewer first: the ordering popup opens in the page, under a modal dialog.
-          onClick={onClose}
+          // Closes the viewer first, then opens ordering: the popup opens in the page, under a
+          // modal dialog, and both use a history entry for Back.
+          onClick={onOrder}
           className="inline-flex min-h-[50px] items-center rounded-full bg-cherry px-6 font-display text-lg uppercase tracking-[.12em] text-white shadow-[0_0_24px_rgba(200,16,46,.7)] transition hover:bg-[#e01636]"
         >
           {item.price ? 'Order this' : 'Order online'}
