@@ -36,7 +36,8 @@ UnifrakturMaguntia = press-archive masthead).
 `/` (griddle hero → story + awards + press → "From the kitchen" photo gallery → mint visit band with the live open state
 → receipt footer; the split-flap board was removed 2026-10-26 at JP's request) · `/menu` (Akelt `/api/menu`, prices never stale, every dish opens
 the ordering popup) · `/story` · `/press` (In the news: newsprint archive of awards, On camera, In print, Stacker) · `/jobs` (application → `/api/jobs`) · `/contact` (map, hours,
-form → `/api/contact`) · `sitemap.xml` · `robots.txt`. `/gallery` → `/story`, `/reservation` → `/contact`.
+form → `/api/contact`); both forms deliver to the **Akelt inbox** (`AKELT_INBOX_KEY`, `lib/inbox.ts`) AND
+email (Resend), success when either lands, 503 only when neither is configured · `sitemap.xml` · `robots.txt`. `/gallery` → `/story`, `/reservation` → `/contact`.
 
 ## Effects (all built)
 
@@ -93,8 +94,9 @@ Built and verified locally against the Akelt mock env: tsc + eslint clean; **7/7
 - **"Family", not names** — the owners are never named on the site (JP's call).
 - Guest checks + five-dish hero + phone hero layout (see Effects).
 
-**Not yet:** custom domain (southsidediner.net is on Webflow), Resend env (`RESEND_API_KEY`,
-`RESEND_FROM`, `LEADS_TO`) so the forms deliver, `NEXT_PUBLIC_AKELT_ORIGIN` check on Vercel,
+**Not yet:** custom domain (southsidediner.net is on Webflow), `AKELT_INBOX_KEY` on Vercel (after the
+Akelt inbox ships: Admin → Inbox → Create website key), Resend env (`RESEND_API_KEY`, `RESEND_FROM`,
+`LEADS_TO`; JP reports these are set), `NEXT_PUBLIC_AKELT_ORIGIN` check on Vercel,
 Google Business Profile hours check.
 
 ## Next up

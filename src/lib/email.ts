@@ -2,8 +2,9 @@ import 'server-only';
 import { Resend } from 'resend';
 import { SITE } from './site';
 
-// Contact + job application delivery. Without RESEND_API_KEY the routes answer 503 with a
-// friendly "being set up" so a half-configured deploy never silently drops a lead.
+// Contact + job application email (the other delivery is the Akelt inbox, lib/inbox.ts). With
+// neither configured the routes answer 503 with a friendly "being set up", so a half-configured
+// deploy never silently drops a lead.
 
 export function emailReady(): boolean {
   return Boolean(process.env.RESEND_API_KEY && process.env.RESEND_FROM);

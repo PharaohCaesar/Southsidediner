@@ -10,5 +10,12 @@ export default defineConfig({
     baseURL: 'http://localhost:3010',
     launchOptions: { executablePath: process.env.PW_CHROMIUM || undefined },
   },
-  webServer: { command: 'npm run dev', url: 'http://localhost:3010', reuseExistingServer: true, timeout: 60_000 },
+  webServer: {
+    command: 'npm run dev',
+    url: 'http://localhost:3010',
+    reuseExistingServer: true,
+    timeout: 60_000,
+    // The Akelt mock backend's seeded website key, so the forms post into its inbox end to end.
+    env: { AKELT_INBOX_KEY: process.env.AKELT_INBOX_KEY ?? 'sk_site_e2e_mock_key_0000000000000000000000000' },
+  },
 });

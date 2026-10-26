@@ -114,19 +114,39 @@ test.describe('southsidediner.net', () => {
     await expect(page.getByText(/\$\d+\.\d{2}/).first()).toBeVisible();
   });
 
-  test('forms validate and report the not-yet-configured email path honestly', async ({ page, request }) => {
+  test('the contact form and job applications land in the Akelt inbox; bad input and bots are refused', async ({ page, request }) => {
+    const MOCK = 'http://127.0.0.1:54321';
+    const inbox = async (name: string) =>
+      (await (await request.get(`${MOCK}/rest/v1/site_messages?select=*&name=eq.${encodeURIComponent(name)}`, { headers: { apikey: 'mock-anon-key' } })).json()) as {
+        kind: string; subject: string | null; body: string | null; phone: string | null; fields: Record<string, string>; source: string | null;
+      }[];
+    const stamp = Date.now();
+
+    // The real form, in a browser.
     await page.goto('/contact');
-    await page.getByLabel(/Name/).fill('E2E');
+    await page.getByLabel(/Name/).fill(`E2E Contact ${stamp}`);
     await page.getByLabel(/Phone/).fill('4405551234');
     await page.getByLabel(/Message/).fill('Hello from the test suite');
     await page.getByRole('button', { name: 'Send message' }).click();
-    await expect(page.locator('form [role="alert"]')).toContainText(/being set up|call us|try again in a few minutes/i);
-    // Fresh "IP" per run so the per-IP rate limit from earlier runs doesn't apply here.
+    await expect(page.getByText("Thanks — we'll get back to you soon.")).toBeVisible();
+    const [msg] = await inbox(`E2E Contact ${stamp}`);
+    expect(msg).toMatchObject({ kind: 'contact', body: 'Hello from the test suite', phone: '4405551234' });
+
+    // A job application (API, fresh "IP" so the per-IP rate limit from earlier runs doesn't apply).
     const headers = { 'x-forwarded-for': `10.9.${Math.floor(Math.random() * 250)}.${Math.floor(Math.random() * 250)}` };
+    const ok = await request.post('/api/jobs', {
+      headers,
+      data: { name: `E2E Applicant ${stamp}`, phone: '4405559876', position: 'Cook', schedule: 'Full time', experience: '6 years', why: 'Flat-top master' },
+    });
+    expect(ok.status()).toBe(200);
+    const [app] = await inbox(`E2E Applicant ${stamp}`);
+    expect(app).toMatchObject({ kind: 'job', subject: 'Cook', body: 'Flat-top master', fields: { Schedule: 'Full time', Experience: '6 years' } });
+
     const bad = await request.post('/api/jobs', { headers, data: { name: 'x', phone: '', position: 'CEO' } });
     expect(bad.status()).toBe(400);
-    const bot = await request.post('/api/contact', { headers, data: { website: 'spam', name: 'x', message: 'y', email: 'a@b.c' } });
-    expect((await bot.json()).ok).toBe(true); // honeypot swallowed silently
+    const bot = await request.post('/api/contact', { headers, data: { website: 'spam', name: `Bot ${stamp}`, message: 'y', email: 'a@b.c' } });
+    expect((await bot.json()).ok).toBe(true); // honeypot swallowed silently…
+    expect(await inbox(`Bot ${stamp}`)).toHaveLength(0); // …and never delivered
   });
 
   test('old Webflow URLs redirect; sitemap, robots and structured data exist', async ({ request, page }) => {
