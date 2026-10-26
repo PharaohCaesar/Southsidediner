@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { GRIDDLE, SITE } from '@/lib/site';
-import { sizzle, ding } from '@/components/fx/sound';
+import { sizzle } from '@/components/fx/sound';
 
 // "Fire up the griddle." A raw breakfast sits on a cold flat-top (canvas). Hover or drag
 // the spatula and it cooks: a soft brush erases the raw frame to reveal its pixel-aligned
@@ -195,7 +195,7 @@ export function GriddleHero() {
 
   // The griddle starts on its own: shortly after the dish appears, a small spiral at the
   // dish's `spot` cooks through, then steam keeps rising from it until the visitor takes
-  // over. Doesn't count as "touched" and makes no sound.
+  // over. Doesn't count as "touched" and stays silent (no sizzle).
   useEffect(() => {
     if (!ready || touched || done || !spot) return;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -242,7 +242,6 @@ export function GriddleHero() {
         setPct(1);
         setDone(true);
         sizzle(false);
-        ding();
       }
     };
     requestAnimationFrame(run);

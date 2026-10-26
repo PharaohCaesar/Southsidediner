@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { SITE } from '@/lib/site';
-import { SoundToggle } from '@/components/fx/sound';
 
 const LINKS = [
   { href: '/menu', label: 'Menu' },
@@ -60,7 +59,6 @@ export function Nav() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2 md:ml-3">
-          <SoundToggle />
           <a
             href={`tel:${SITE.phoneE164}`}
             className="hidden rounded-full px-3 py-2 text-sm font-semibold text-white/80 hover:text-white lg:inline-flex"

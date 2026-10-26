@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
-import { ding } from '@/components/fx/sound';
 import { GuestCheck, checkNumber } from '@/components/guest-check';
 
 type Field =
@@ -28,7 +27,7 @@ export function LeadForm({ action, fields, submit, success, server = 'Web' }: {
     try {
       const r = await fetch(action, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
       const j = (await r.json()) as { ok: boolean; error?: string };
-      if (j.ok) { setState('ok'); setMsg(success); ding(); }
+      if (j.ok) { setState('ok'); setMsg(success); }
       else { setState('err'); setMsg(j.error ?? 'Something went wrong.'); }
     } catch {
       setState('err'); setMsg('No connection — please try again.');

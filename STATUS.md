@@ -78,8 +78,9 @@ email (Resend), success when either lands, 503 only when neither is configured Â
   pill with a service bell (matches the nav + phone bar), **starburst** badges,
   **polaroids** + Kodachrome filter, CSS **steam**, **milkshake** scroll progress,
   **receipt** footer printing line by line.
-- **Sounds** `fx/sound.tsx`: Web Audio bell (`[data-bell]`) + griddle sizzle, off by default, toggle
-  in the nav, remembered in localStorage.
+- **Sound** `fx/sound.tsx`: only the griddle sizzle (Web Audio, no files) while the visitor cooks. Always on;
+  browsers allow it after a tap/click (a touch drag counts, hover doesn't). The bell and the nav sound toggle
+  were removed (JP, 2026-10-26); `[data-bell]` now only switches the spatula cursor to the bell icon.
 - **Live open/closed** `open-now.tsx` from Akelt `/api/site` (honours "Closed today").
 
 ## Current state (2026-10-26)
