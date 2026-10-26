@@ -1,5 +1,4 @@
 import { GriddleHero } from '@/components/hero/griddle-hero';
-import { SpecialsBoard } from '@/components/home/specials-board';
 import { Jukebox } from '@/components/jukebox';
 import { StoryStrip } from '@/components/home/story-strip';
 import { ChromeDivider } from '@/components/chrome-divider';
@@ -13,8 +12,6 @@ export default function HomePage() {
       <GriddleHero />
       <ChromeDivider />
       <StoryStrip />
-      <ChromeDivider />
-      <SpecialsBoard />
       <ChromeDivider />
       <Jukebox />
       <ChromeDivider />

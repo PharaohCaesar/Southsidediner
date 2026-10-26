@@ -52,9 +52,11 @@ test.describe('southsidediner.net', () => {
     expect(await page.locator('main a[href*="youtube.com"]').count()).toBe(3);
   });
 
-  test('home: board, jukebox, story, visit band, and receipt all render', async ({ page }) => {
+  test('home: story, jukebox, visit band with live open state, and receipt all render', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByRole('img', { name: 'Corned Beef Hash & Eggs' })).toBeVisible();
+    await expect(page.locator('#board-h')).toHaveCount(0); // the split-flap board is gone
+    const visit = page.locator('section', { has: page.locator('#visit-h') });
+    await expect(visit.getByRole('status')).toContainText(/Open now|Closed|Opens|8 AM/);
     await page.getByRole('button', { name: /Breakfast Tacos/ }).click();
     await expect(page.getByRole('heading', { level: 3, name: 'Breakfast Tacos' })).toBeVisible();
     await expect(page.getByRole('heading', { name: /A real diner/ })).toBeVisible();
@@ -142,24 +144,4 @@ test.describe('southsidediner.net', () => {
     await ctx.close();
   });
 
-  test("today's specials from Admin → Website sit on the board's top rows", async ({ page, request }) => {
-    const akelt = process.env.NEXT_PUBLIC_AKELT_ORIGIN ?? 'http://localhost:3000';
-    const specials = ((await (await request.get(`${akelt}/api/site`)).json()).specials ?? []) as { title: string }[];
-    await page.goto('/');
-    await page.locator('#board-h').scrollIntoViewIfNeeded();
-    const labels = await page.getByRole('list', { name: 'Now serving' }).getByRole('img').evaluateAll((els) => els.map((e) => e.getAttribute('aria-label')));
-    expect(labels).toHaveLength(4);
-    const pinned = specials.slice(0, 3).map((s) => s.title);
-    expect(labels.slice(0, pinned.length)).toEqual(pinned);
-    if (pinned.length) await expect(page.getByText("Today's specials are up")).toBeVisible();
-  });
-
-  test('the board keeps flipping to other dishes from the menu', async ({ page }) => {
-    await page.goto('/');
-    await page.locator('#board-h').scrollIntoViewIfNeeded();
-    const board = page.getByRole('list', { name: 'Now serving' });
-    const labels = () => board.getByRole('img').evaluateAll((els) => els.map((e) => e.getAttribute('aria-label')));
-    const first = await labels();
-    await expect.poll(labels, { timeout: 12_000 }).not.toEqual(first);
-  });
 });

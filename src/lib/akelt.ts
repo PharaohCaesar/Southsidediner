@@ -16,8 +16,6 @@ export type SiteFeed = {
   };
   closed: { until: string; message: string | null; text: string } | null;
   popups: unknown[];
-  /** Today's specials from Admin → Website (absent on Akelt builds before the specials board). */
-  specials?: { title: string; note: string | null; price_cents: number | null }[];
 };
 
 export type MenuFeed = {

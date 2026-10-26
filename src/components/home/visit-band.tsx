@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { SITE } from '@/lib/site';
 import { GuestCheck } from '@/components/guest-check';
+import { OpenNow } from '@/components/open-now';
 
 export function VisitBand() {
   return (
@@ -15,6 +16,10 @@ export function VisitBand() {
             {SITE.address.line1}, {SITE.address.city}, {SITE.address.state} {SITE.address.zip}. Counter seats, booths, and a
             full pot of coffee waiting.
           </p>
+          {/* Live open/closed from Akelt (honours "Closed today"), lit like a diner sign. */}
+          <div className="mt-5 inline-block rounded-2xl bg-ink text-white shadow-[0_10px_24px_rgba(0,0,0,.18)]">
+            <OpenNow />
+          </div>
           <div className="mt-6 flex flex-wrap gap-3">
             <a href={SITE.mapsUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-[48px] items-center rounded-full bg-ink px-6 font-display text-[15px] uppercase tracking-[.12em] text-cream hover:bg-black">
               Directions
