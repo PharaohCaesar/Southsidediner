@@ -8,6 +8,7 @@ import { Nav } from '@/components/nav';
 import { Footer } from '@/components/footer';
 import { AkeltWidget } from '@/components/akelt-widget';
 import { Milkshake } from '@/components/fx/milkshake';
+import { ActionBar } from '@/components/action-bar';
 
 const anton = Anton({ weight: '400', subsets: ['latin'], variable: '--font-anton' });
 const barlow = Barlow({ weight: ['400', '500', '600', '700'], subsets: ['latin'], variable: '--font-barlow' });
@@ -51,6 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main id="main" className="flex-1">{children}</main>
         <Footer />
         <Milkshake />
+        <ActionBar />
         <Spatula />
         <AkeltWidget />
       </body>

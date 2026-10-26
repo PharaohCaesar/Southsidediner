@@ -181,3 +181,13 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .chrome-strip::after, .checker-floor::before { animation: none; }
 }
+
+/* Phones: once the bottom action bar is up, it carries "Order online", so the nav doesn't repeat it. */
+@media (max-width: 767px) {
+  html[data-bar-up] .nav-order { display: none; }
+}
+
+/* The board's price note waits for the flaps to land before it fades in. */
+@keyframes board-note-in { from { opacity: 0; } to { opacity: 1; } }
+.board-note { animation: board-note-in .5s ease 1.1s both; }
+@media (prefers-reduced-motion: reduce) { .board-note { animation: none; } }

@@ -12,11 +12,11 @@ export default function HomePage() {
       <JsonLd />
       <GriddleHero />
       <ChromeDivider />
+      <StoryStrip />
+      <ChromeDivider />
       <SpecialsBoard />
       <ChromeDivider />
       <Jukebox />
-      <ChromeDivider />
-      <StoryStrip />
       <ChromeDivider />
       <VisitBand />
     </>

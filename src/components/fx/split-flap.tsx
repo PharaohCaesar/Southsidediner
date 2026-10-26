@@ -2,52 +2,82 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-const CHARS = ' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$.&\'-:,!';
+const CHARS = ' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$.&\'-:,!/#+()';
+
+/** Uppercases and folds text into the flap charset (curly quotes, accents, anything else → nearest/blank). */
+function toFlaps(text: string, cols: number): string {
+  return text
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[‘’`]/g, "'")
+    .toUpperCase()
+    .split('')
+    .map((ch) => (CHARS.includes(ch) ? ch : ' '))
+    .join('')
+    .padEnd(cols)
+    .slice(0, cols);
+}
 
 /**
  * Solari split-flap board. Decorative: the resolved text is the only accessible text
  * (the per-column charset is aria-hidden so crawlers and screen readers don't see
- * gibberish — a Vagón lesson).
+ * gibberish — a Vagón lesson). Starts flapping when scrolled into view, and whenever
+ * `text` changes afterwards it flaps from what's showing to the new text.
  */
 export function SplitFlap({ text, cols, className = '', delay = 0 }: { text: string; cols: number; className?: string; delay?: number }) {
-  const target = text.toUpperCase().padEnd(cols).slice(0, cols);
+  const target = toFlaps(text, cols);
   const [shown, setShown] = useState(' '.repeat(cols));
   const ref = useRef<HTMLDivElement>(null);
-  const started = useRef(false);
+  const cur = useRef<number[]>(Array.from({ length: cols }, () => 0));
+  const visible = useRef(false);
+  const first = useRef(true);
+  const run = useRef(0);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    const goal = target.split('').map((ch) => Math.max(0, CHARS.indexOf(ch)));
+    const id = ++run.current;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const animate = (wait: number) => {
+      if (reduce) {
+        cur.current = goal.slice();
+        requestAnimationFrame(() => { if (id === run.current) setShown(target); });
+        return;
+      }
+      const t0 = performance.now() + wait;
+      const tick = () => {
+        if (id !== run.current) return; // a newer text took over
+        const now = performance.now();
+        if (now < t0) { requestAnimationFrame(tick); return; }
+        let moving = false;
+        const c = cur.current;
+        for (let i = 0; i < c.length; i++) {
+          // Columns start staggered left→right and flap one char per frame.
+          if (now < t0 + i * 45) { moving = true; continue; }
+          if (c[i] !== goal[i]) { c[i] = (c[i] + 1) % CHARS.length; moving = true; }
+        }
+        setShown(c.map((n) => CHARS[n]).join(''));
+        if (moving) setTimeout(() => requestAnimationFrame(tick), 28);
+      };
+      requestAnimationFrame(tick);
+    };
+
+    if (visible.current) { animate(0); return; }
     const io = new IntersectionObserver(
       (es) => {
-        if (!es[0].isIntersecting || started.current) return;
-        started.current = true;
+        if (!es[0].isIntersecting) return;
+        visible.current = true;
         io.disconnect();
-        const t0 = performance.now() + delay;
-        const cur = target.split('').map(() => 0);
-        const goal = target.split('').map((ch) => Math.max(0, CHARS.indexOf(ch)));
-        const tick = () => {
-          const now = performance.now();
-          if (now < t0) { requestAnimationFrame(tick); return; }
-          let moving = false;
-          for (let i = 0; i < cur.length; i++) {
-            // Columns start staggered left→right and flap one char per frame.
-            if (now < t0 + i * 45) { moving = true; continue; }
-            if (cur[i] !== goal[i]) { cur[i] = (cur[i] + 1) % CHARS.length; moving = true; }
-          }
-          setShown(cur.map((n) => CHARS[n]).join(''));
-          if (moving) setTimeout(() => requestAnimationFrame(tick), 28);
-        };
-        requestAnimationFrame(tick);
+        animate(first.current ? delay : 0);
+        first.current = false;
       },
       { threshold: 0.4 }
     );
     io.observe(el);
     return () => io.disconnect();
   }, [target, delay]);
-
-  // Re-run when the text changes after first reveal.
-  useEffect(() => { started.current = false; }, [text]);
 
   return (
     <div ref={ref} className={`flex gap-[3px] ${className}`} role="img" aria-label={text}>

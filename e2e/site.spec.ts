@@ -95,4 +95,27 @@ test.describe('southsidediner.net', () => {
     await expect(page.getByText(/\d+% cooked/)).not.toHaveText('0% cooked');
     await ctx.close();
   });
+
+  test('phone: Call / Order / Directions bar slides up after the hero', async ({ browser }) => {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+    const page = await ctx.newPage();
+    await page.goto('/');
+    const bar = page.getByRole('navigation', { name: 'Quick actions' });
+    await expect(bar).not.toBeInViewport(); // slid off-screen (and inert) over the hero
+    await page.evaluate(() => window.scrollTo(0, 1200));
+    await expect(bar.getByRole('link', { name: 'Call' })).toHaveAttribute('href', 'tel:+14408426888');
+    await expect(bar.getByRole('link', { name: 'Directions' })).toHaveAttribute('href', /google\.com\/maps/);
+    await expect(bar.getByRole('link', { name: /Order online/ })).toBeInViewport();
+    await expect(page.locator('header .nav-order')).toBeHidden(); // no duplicate Order button
+    await ctx.close();
+  });
+
+  test('the board keeps flipping to other dishes from the menu', async ({ page }) => {
+    await page.goto('/');
+    await page.locator('#board-h').scrollIntoViewIfNeeded();
+    const board = page.getByRole('list', { name: 'Now serving' });
+    const labels = () => board.getByRole('img').evaluateAll((els) => els.map((e) => e.getAttribute('aria-label')));
+    const first = await labels();
+    await expect.poll(labels, { timeout: 12_000 }).not.toEqual(first);
+  });
 });

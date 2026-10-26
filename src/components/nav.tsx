@@ -71,7 +71,7 @@ export function Nav() {
             href={SITE.akeltOrigin}
             data-akelt-order="/"
             data-bell
-            className="inline-flex min-h-[42px] items-center gap-2 rounded-full bg-cherry px-4 font-display text-[15px] uppercase tracking-[.12em] text-white shadow-[0_0_18px_rgba(200,16,46,.65)] transition hover:bg-[#e01636] hover:shadow-[0_0_28px_rgba(255,47,109,.8)]"
+            className="nav-order inline-flex min-h-[42px] items-center gap-2 rounded-full bg-cherry px-4 font-display text-[15px] uppercase tracking-[.12em] text-white shadow-[0_0_18px_rgba(200,16,46,.65)] transition hover:bg-[#e01636] hover:shadow-[0_0_28px_rgba(255,47,109,.8)]"
           >
             Order online
           </a>

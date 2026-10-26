@@ -21,7 +21,7 @@ export function Footer() {
   ];
 
   return (
-    <footer className="relative overflow-hidden bg-ink pt-16 text-white">
+    <footer className="relative overflow-hidden bg-ink pb-[calc(76px+env(safe-area-inset-bottom))] pt-16 text-white md:pb-0">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 pb-16 sm:px-6 lg:grid-cols-[1fr_360px]">
         <div className="space-y-8">
           <p className="font-script text-3xl text-mustard">Thanks for stopping in.</p>

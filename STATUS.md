@@ -27,12 +27,13 @@ press, the specials board, job perks). Components never hardcode them.
 ## Stack
 
 Next.js 16 (App Router, Turbopack) · React 19 · Tailwind v4 · Lenis · Resend (forms) ·
-next/font (Anton = Googie display, Barlow = body, Pacifico = script, Kalam = guest-check ink,
+next/font (Anton = Googie display, Barlow = body, Pacifico = script, Special Elite = typewriter notes,
+Kalam = guest-check ink,
 UnifrakturMaguntia = press-archive masthead).
 
 ## Routes
 
-`/` (griddle hero → split-flap board + live open state → jukebox dishes → polaroid story + press →
+`/` (griddle hero → story + awards + press → split-flap board + live open state → jukebox dishes →
 mint visit band → receipt footer) · `/menu` (Akelt `/api/menu`, prices never stale, every dish opens
 the ordering popup) · `/story` · `/jobs` (application → `/api/jobs`) · `/contact` (map, hours,
 form → `/api/contact`) · `sitemap.xml` · `robots.txt`. `/gallery` → `/story`, `/reservation` → `/contact`.
@@ -52,7 +53,14 @@ form → `/api/contact`) · `sitemap.xml` · `robots.txt`. `/gallery` → `/stor
   from `sm` up the copy overlays the photo. Replace with real tripod pairs when shot (same filenames).
 - **Spatula cursor** `fx/spatula.tsx`: chrome dot + neon halo; spatula over the griddle, counter
   bell over order buttons, handset over phone links. Fine-pointer devices only.
-- **Split-flap board** `fx/split-flap.tsx` (aria-hidden flaps, resolved text is the a11y text).
+- **Split-flap board** `fx/split-flap.tsx` + `home/rotating-board.tsx`: starts with `BOARD` (site.ts),
+  then endlessly re-flaps one row every 3.2 s to another dish from the live Akelt `/api/menu`
+  (sides, drinks and kids' menu skipped; names over 26 chars skipped), price note fades in after the
+  flip. Pauses off-screen / in background tabs. Signature dishes are the fallback if the feed is down.
+  aria-hidden flaps; the resolved text is the a11y text.
+- **Phone action bar** `action-bar.tsx`: Call · Order online · Directions pinned to the bottom on
+  phones, slides up after the hero; while it's up the nav hides its own Order button
+  (`html[data-bar-up]`). Footer is padded so the bar never covers it. Not shown from `md` up.
 - **Jukebox** `jukebox.tsx`: 7 signature dishes as title cards, 45 spins, dish swings in.
 - **Neon** utilities (`.neon`, `.neon-tube`, flicker), **checkerboard floor** in perspective,
   **chrome strips** with a glint, **guest checks** modeled on the restaurant's real FMP 2-part pads (`components/guest-check.tsx`,
