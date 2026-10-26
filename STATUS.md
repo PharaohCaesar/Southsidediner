@@ -57,8 +57,11 @@ form → `/api/contact`) · `sitemap.xml` · `robots.txt`. `/gallery` → `/stor
   from `sm` up the copy overlays the photo. Replace with real tripod pairs when shot (same filenames).
 - **Spatula cursor** `fx/spatula.tsx`: chrome dot + neon halo; spatula over the griddle, counter
   bell over order buttons, handset over phone links. Fine-pointer devices only.
-- **Split-flap board** `fx/split-flap.tsx` + `home/rotating-board.tsx`: starts with `BOARD` (site.ts),
-  then endlessly re-flaps one row every 3.2 s to another dish from the live Akelt `/api/menu`
+- **Split-flap board** `fx/split-flap.tsx` + `home/rotating-board.tsx`: **today's specials from Akelt
+  Admin → Website** (`/api/site` → `specials`) sit on the top rows in mustard with a neon ★ price/note
+  (up to `BOARD_SPECIAL_ROWS` = 3; more take turns; phones list them with prices under the board).
+  The other rows start with `BOARD` (site.ts),
+  then endlessly re-flap one row every 3.2 s to another dish from the live Akelt `/api/menu`
   (sides, drinks and kids' menu skipped; names over 26 chars skipped), price note fades in after the
   flip. Pauses off-screen / in background tabs. Signature dishes are the fallback if the feed is down.
   aria-hidden flaps; the resolved text is the a11y text.
@@ -100,7 +103,8 @@ Google Business Profile hours check.
 1. Vercel project + env (Akelt origin, site URL, Resend keys), then DNS cut-over from Webflow.
 2. Shoot the real griddle pair on a tripod (raw → cooked, same frame) and drop into `assets-src/`.
 3. Cut the 2018 film into a "33 seconds inside Southside" section + 3–5 s micro-loops (see notes).
-4. When the Akelt specials editor ships, feed `BOARD` from it instead of `site.ts`.
+4. ✅ Specials board: built (Akelt branch `ccr-7b8d5726-vgq10m`, migration 0015). Shows on the site
+   once that PR is merged and 0015 is applied to the live DB.
 5. DNS cut-over: move southsidediner.net from Webflow to Vercel; keep the redirects above.
 
 ## Hard-won lessons
@@ -110,6 +114,9 @@ Google Business Profile hours check.
   Only capture for touch/pen, and never when the pointerdown target is a link or button.
 - `role="alert"` test selectors must be scoped to the form (Next's route announcer is an alert).
 - Ticket numbers and image sources must be deterministic at render (hydration mismatch otherwise).
+- **Never import a VALUE from a `'use client'` module into a server component** — it arrives as a
+  client-reference proxy (`specials.slice(0, MAX)` silently returned nothing). Shared constants live in
+  `src/lib/site.ts`; only components and types come from client modules.
 - **Never paraphrase inside quotation marks.** Press quotes are verbatim from the clippings; two
   invented "quotes" had to be pulled. If it isn't in the article, it isn't in quotes.
 - Always use absolute paths in scripted file writes; a `cd` that silently fails sends files to the wrong project.

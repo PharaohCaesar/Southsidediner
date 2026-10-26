@@ -24,7 +24,9 @@ function toFlaps(text: string, cols: number): string {
  * gibberish — a Vagón lesson). Starts flapping when scrolled into view, and whenever
  * `text` changes afterwards it flaps from what's showing to the new text.
  */
-export function SplitFlap({ text, cols, className = '', delay = 0 }: { text: string; cols: number; className?: string; delay?: number }) {
+export function SplitFlap({
+  text, cols, className = '', delay = 0, tone = 'cream',
+}: { text: string; cols: number; className?: string; delay?: number; tone?: 'cream' | 'special' }) {
   const target = toFlaps(text, cols);
   const [shown, setShown] = useState(' '.repeat(cols));
   const ref = useRef<HTMLDivElement>(null);
@@ -85,7 +87,9 @@ export function SplitFlap({ text, cols, className = '', delay = 0 }: { text: str
         <span
           key={i}
           aria-hidden
-          className="relative grid h-[1.55em] w-[1em] place-items-center overflow-hidden rounded-[3px] bg-[#1a1a1d] font-display text-[1em] leading-none text-cream shadow-[inset_0_1px_0_rgba(255,255,255,.08),0_1px_2px_rgba(0,0,0,.6)]"
+          className={`relative grid h-[1.55em] w-[1em] place-items-center overflow-hidden rounded-[3px] font-display text-[1em] leading-none shadow-[inset_0_1px_0_rgba(255,255,255,.08),0_1px_2px_rgba(0,0,0,.6)] ${
+            tone === 'special' ? 'bg-[#26150f] text-mustard' : 'bg-[#1a1a1d] text-cream'
+          }`}
         >
           <span className="pointer-events-none absolute inset-x-0 top-1/2 h-px bg-black/80" />
           {ch}

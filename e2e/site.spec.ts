@@ -142,6 +142,18 @@ test.describe('southsidediner.net', () => {
     await ctx.close();
   });
 
+  test("today's specials from Admin → Website sit on the board's top rows", async ({ page, request }) => {
+    const akelt = process.env.NEXT_PUBLIC_AKELT_ORIGIN ?? 'http://localhost:3000';
+    const specials = ((await (await request.get(`${akelt}/api/site`)).json()).specials ?? []) as { title: string }[];
+    await page.goto('/');
+    await page.locator('#board-h').scrollIntoViewIfNeeded();
+    const labels = await page.getByRole('list', { name: 'Now serving' }).getByRole('img').evaluateAll((els) => els.map((e) => e.getAttribute('aria-label')));
+    expect(labels).toHaveLength(4);
+    const pinned = specials.slice(0, 3).map((s) => s.title);
+    expect(labels.slice(0, pinned.length)).toEqual(pinned);
+    if (pinned.length) await expect(page.getByText("Today's specials are up")).toBeVisible();
+  });
+
   test('the board keeps flipping to other dishes from the menu', async ({ page }) => {
     await page.goto('/');
     await page.locator('#board-h').scrollIntoViewIfNeeded();

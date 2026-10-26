@@ -190,6 +190,9 @@ export const BOARD = [
   { label: 'Ground-in-house coffee', note: 'Bottomless' },
 ] as const;
 
+/** Board rows today's specials (Admin → Website) can take; the rest always flip through the menu. */
+export const BOARD_SPECIAL_ROWS = 3;
+
 export const JOBS = {
   positions: ['Server', 'Cook', 'Busser', 'Dishwasher / Prep Cook'],
   schedules: ['Full time', 'Part time', 'Either'],
