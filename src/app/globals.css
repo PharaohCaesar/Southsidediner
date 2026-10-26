@@ -191,3 +191,10 @@ body {
 @keyframes board-note-in { from { opacity: 0; } to { opacity: 1; } }
 .board-note { animation: board-note-in .5s ease 1.1s both; }
 @media (prefers-reduced-motion: reduce) { .board-note { animation: none; } }
+
+/* Griddle hero "cook here" tag: fades in once the starter spot has cooked; wording per pointer. */
+@keyframes griddle-hint-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.griddle-hint { animation: griddle-hint-in .6s ease 1.7s both; }
+.hint-coarse { display: none; }
+@media (pointer: coarse) { .hint-fine { display: none; } .hint-coarse { display: inline; } }
+@media (prefers-reduced-motion: reduce) { .griddle-hint { animation: none; } }

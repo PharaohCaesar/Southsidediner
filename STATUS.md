@@ -44,6 +44,10 @@ form → `/api/contact`) · `sitemap.xml` · `robots.txt`. `/gallery` → `/stor
   hover (desktop) or drag (touch) erases with a soft brush; a 64×36 grid computes "% cooked";
   at 70% the rest sizzles through, the headline swaps to "Come and get it" + "Order's up: <dish>.";
   steam particles rise wherever you've cooked; "Cook it for me" / "Next dish →".
+  **Starter spot:** ~0.65 s after the dish appears, a small spiral cooks through at the dish's `spot`
+  (GRIDDLE in site.ts, fractions of the image, chosen for a strong raw→cooked change and clear of the
+  desktop headline), thick steam keeps rising from it, and a pulsing "Run the spatula here" / "Drag to
+  cook" (touch) tag sits on it until the visitor takes over. Doesn't count as touched, no sound.
   **Five real dishes rotate** (`GRIDDLE` in `site.ts`: hash, potato pancakes, sweet/pancakes +
   French toast, gyro, chorizo), next one per visit (localStorage `ssd.dish`), chosen client-side so
   there's no hydration mismatch. Masters `assets-src/griddle-<slug>-{raw,cooked}.jpg` (AI, GPT Image

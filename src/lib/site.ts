@@ -171,12 +171,14 @@ export const LISTS = [
  * Hero griddle scenes, each built from a real Southside dish photo (AI, GPT Image 2.5 via
  * Higgsfield; raw twin derived from the cooked frame). Files: public/images/griddle-<slug>-{raw,cooked}[-1280].webp
  */
+// `spot` = where the griddle starts cooking on its own (fractions of the image) so visitors
+// see it's interactive: pick something with a strong raw→cooked change, clear of the copy.
 export const GRIDDLE = [
-  { slug: 'hash', dish: 'Corned Beef Hash', line: 'Our signature corned beef hash, scrambled eggs and peppered bacon.' },
-  { slug: 'potato', dish: 'Potato Pancake Combo', line: 'Homemade potato pancakes, two eggs, peppered bacon and sausage links.' },
-  { slug: 'sweet', dish: 'Pancakes & French Toast', line: 'Blueberry buttermilk pancakes and golden French toast, sweet and fluffy.' },
-  { slug: 'gyro', dish: 'Gyro Hash', line: 'Hand-shaved gyro meat on crispy hash browns with tomatoes and two eggs.' },
-  { slug: 'chorizo', dish: 'Chorizo Hash', line: 'Chorizo, crispy hash browns, two eggs, jalapeño and cilantro.' },
+  { slug: 'hash', spot: [0.47, 0.28], dish: 'Corned Beef Hash', line: 'Our signature corned beef hash, scrambled eggs and peppered bacon.' },
+  { slug: 'potato', spot: [0.6, 0.55], dish: 'Potato Pancake Combo', line: 'Homemade potato pancakes, two eggs, peppered bacon and sausage links.' },
+  { slug: 'sweet', spot: [0.48, 0.26], dish: 'Pancakes & French Toast', line: 'Blueberry buttermilk pancakes and golden French toast, sweet and fluffy.' },
+  { slug: 'gyro', spot: [0.62, 0.45], dish: 'Gyro Hash', line: 'Hand-shaved gyro meat on crispy hash browns with tomatoes and two eggs.' },
+  { slug: 'chorizo', spot: [0.64, 0.36], dish: 'Chorizo Hash', line: 'Chorizo, crispy hash browns, two eggs, jalapeño and cilantro.' },
 ] as const;
 
 /** The specials board. Edited here until the Akelt specials editor ships. */

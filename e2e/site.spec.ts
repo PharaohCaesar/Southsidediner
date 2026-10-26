@@ -26,6 +26,20 @@ test.describe('southsidediner.net', () => {
     expect(errors.filter((e) => !/favicon/i.test(e))).toEqual([]);
   });
 
+  test('home: the griddle starts a steaming spot by itself, with a "cook here" tag', async ({ page }) => {
+    await page.goto('/');
+    // No interaction yet: a starter patch cooks on its own and the tag appears.
+    await expect(page.getByText(/\d+% cooked/)).not.toHaveText('0% cooked', { timeout: 8000 });
+    const tag = page.locator('.griddle-hint');
+    await expect(tag).toContainText('Run the spatula here');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Rise and shine'); // nothing "done" yet
+    // The visitor takes over: the tag gets out of the way.
+    const box = (await page.locator('[data-griddle]').boundingBox())!;
+    await page.mouse.move(box.x + box.width * 0.8, box.y + box.height * 0.3);
+    await page.mouse.move(box.x + box.width * 0.85, box.y + box.height * 0.35);
+    await expect(tag).toHaveCount(0);
+  });
+
   test('home: board, jukebox, story, visit band, and receipt all render', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByRole('img', { name: 'Corned Beef Hash & Eggs' })).toBeVisible();

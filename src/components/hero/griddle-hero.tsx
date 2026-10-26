@@ -15,7 +15,7 @@ const GRID_H = 36;
 const DONE_AT = 0.7;
 const DISH_KEY = 'ssd.dish';
 
-type Particle = { x: number; y: number; vx: number; vy: number; life: number; max: number; r: number };
+type Particle = { x: number; y: number; vx: number; vy: number; life: number; max: number; r: number; a: number };
 
 export function GriddleHero() {
   const wrap = useRef<HTMLDivElement>(null);
@@ -30,6 +30,9 @@ export function GriddleHero() {
   const [done, setDone] = useState(false);
   const [ready, setReady] = useState(false);
   const [touched, setTouched] = useState(false);
+  // Where the griddle starts cooking by itself (CSS px inside the hero), so a visitor sees
+  // a sizzling, steaming patch and a "cook here" tag instead of thinking the food is raw.
+  const [spot, setSpot] = useState<{ x: number; y: number } | null>(null);
   // Which real dish is on the griddle. Chosen on the client (each visit rotates to the
   // next dish), so the server renders the dark griddle and the images fade in.
   const [dish, setDish] = useState<number | null>(null);
@@ -62,6 +65,8 @@ export function GriddleHero() {
       if (ir > cr) { dw = c.height * ir; dx = (c.width - dw) / 2; } else { dh = c.width / ir; dy = (c.height - dh) / 2; }
       ctx.clearRect(0, 0, c.width, c.height);
       ctx.drawImage(img, dx, dy, dw, dh);
+      const [fx, fy] = GRIDDLE[dishRef.current].spot;
+      setSpot({ x: (dx + fx * dw) / dpr, y: (dy + fy * dh) / dpr });
       // Re-apply what's already cooked after a resize.
       const g = grid.current;
       ctx.globalCompositeOperation = 'destination-out';
@@ -110,7 +115,7 @@ export function GriddleHero() {
           p.y += p.vy;
           p.r += 0.35;
           if (p.life > p.max) { ps.splice(i, 1); continue; }
-          const a = (1 - p.life / p.max) * 0.28;
+          const a = (1 - p.life / p.max) * p.a;
           const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
           g.addColorStop(0, `rgba(255,255,255,${a})`);
           g.addColorStop(1, 'rgba(255,255,255,0)');
@@ -126,23 +131,25 @@ export function GriddleHero() {
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  const puff = (x: number, y: number, n = 2) => {
+  // `thick` = the starter spot's steam column: denser and bigger, so it reads as smoke.
+  const puff = useCallback((x: number, y: number, n = 2, thick = false) => {
     const dpr = Math.min(2, window.devicePixelRatio || 1);
     for (let i = 0; i < n; i++) {
       particles.current.push({
         x: x * dpr + (Math.random() - 0.5) * 30, y: y * dpr, vx: (Math.random() - 0.5) * 0.6, vy: -(0.8 + Math.random() * 1.2),
-        life: 0, max: 60 + Math.random() * 50, r: 6 + Math.random() * 10,
+        life: 0, max: (thick ? 80 : 60) + Math.random() * 50, r: (thick ? 10 : 6) + Math.random() * 10, a: thick ? 0.42 : 0.28,
       });
     }
     if (particles.current.length > 260) particles.current.splice(0, particles.current.length - 260);
-  };
+  }, []);
 
-  const cookAt = (clientX: number, clientY: number, radius = 70) => {
+  // Erase the raw frame with a soft round brush at (x, y) in CSS px inside the hero, mirror
+  // it into the grid, and return how many grid cells were newly cooked.
+  const brush = useCallback((x: number, y: number, radius: number) => {
     const c = canvas.current;
     const w = wrap.current;
-    if (!c || !w || finishing.current) return;
+    if (!c || !w) return 0;
     const rect = w.getBoundingClientRect();
-    const x = clientX - rect.left, y = clientY - rect.top;
     const dpr = c.width / rect.width;
     const ctx = c.getContext('2d')!;
     ctx.globalCompositeOperation = 'destination-out';
@@ -154,7 +161,6 @@ export function GriddleHero() {
     ctx.beginPath();
     ctx.arc(x * dpr, y * dpr, radius * dpr, 0, Math.PI * 2);
     ctx.fill();
-    // Mirror into the grid.
     const gr = grid.current;
     const r = radius * 0.7;
     let newly = 0;
@@ -166,16 +172,54 @@ export function GriddleHero() {
     }
     if (newly) {
       cooked.current += newly;
-      const p = cooked.current / (GRID_W * GRID_H);
-      setPct(p);
+      setPct(cooked.current / (GRID_W * GRID_H));
+    }
+    return newly;
+  }, []);
+
+  const cookAt = (clientX: number, clientY: number, radius = 70) => {
+    const w = wrap.current;
+    if (!w || finishing.current) return;
+    const rect = w.getBoundingClientRect();
+    const x = clientX - rect.left, y = clientY - rect.top;
+    const newly = brush(x, y, radius);
+    if (newly) {
       puff(x, y, 1 + Math.min(3, newly));
       if (!touched) setTouched(true);
       sizzle(true);
       if (sizzleTimer.current) clearTimeout(sizzleTimer.current);
       sizzleTimer.current = setTimeout(() => sizzle(false), 450);
-      if (p >= DONE_AT) finish();
+      if (cooked.current / (GRID_W * GRID_H) >= DONE_AT) finish();
     }
   };
+
+  // The griddle starts on its own: shortly after the dish appears, a small spiral at the
+  // dish's `spot` cooks through, then steam keeps rising from it until the visitor takes
+  // over. Doesn't count as "touched" and makes no sound.
+  useEffect(() => {
+    if (!ready || touched || done || !spot) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const width = wrap.current?.getBoundingClientRect().width ?? 1000;
+    const r = Math.max(30, Math.min(56, width * 0.038));
+    const N = 14;
+    let i = 0, t0 = 0, raf = 0, steamId = 0;
+    const timer = window.setTimeout(() => {
+      const step = (t: number) => {
+        if (!t0) t0 = t;
+        const upTo = reduce ? N : Math.min(N, Math.floor((t - t0) / 85) + 1);
+        for (; i < upTo; i++) {
+          const a = i * 0.95, d = (i / N) * r;
+          const x = spot.x + Math.cos(a) * d, y = spot.y + Math.sin(a) * d * 0.7;
+          brush(x, y, r);
+          if (!reduce) puff(x, y, 2, true);
+        }
+        if (i < N) raf = requestAnimationFrame(step);
+        else if (!reduce) steamId = window.setInterval(() => puff(spot.x + (Math.random() - 0.5) * r * 1.4, spot.y - r * 0.15, 1, true), 110);
+      };
+      raf = requestAnimationFrame(step);
+    }, 650);
+    return () => { clearTimeout(timer); cancelAnimationFrame(raf); clearInterval(steamId); };
+  }, [ready, touched, done, spot, brush, puff]);
 
   const finish = () => {
     if (finishing.current) return;
@@ -216,6 +260,7 @@ export function GriddleHero() {
     setDone(false);
     setTouched(false);
     setReady(false);
+    setSpot(null);
     setDish(n);
   };
   const current = GRIDDLE[dish ?? 0];
@@ -261,6 +306,17 @@ export function GriddleHero() {
         )}
         <canvas ref={canvas} className={`absolute inset-0 h-full w-full transition-opacity duration-500 ${ready ? 'opacity-100' : 'opacity-0'}`} />
         <canvas ref={steam} className="pointer-events-none absolute inset-0 h-full w-full" />
+        {/* "cook here" tag over the starter spot, until the visitor takes over */}
+        {spot && ready && !touched && !done && (
+          <div className="griddle-hint pointer-events-none absolute z-[1]" style={{ left: spot.x, top: spot.y }} aria-hidden>
+            <span className="absolute left-0 top-0 h-20 w-20 -translate-x-1/2 -translate-y-1/2 animate-ping rounded-full border-2 border-mustard/70 [animation-duration:1.8s]" />
+            <span className="absolute left-0 top-12 -translate-x-1/2 whitespace-nowrap rounded-full bg-ink/80 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[.16em] text-mustard shadow-[0_6px_20px_rgba(0,0,0,.4)] backdrop-blur sm:top-14 sm:text-xs">
+              <span className="hint-fine">Run the spatula here</span>
+              <span className="hint-coarse">Drag to cook</span>
+            </span>
+          </div>
+        )}
+
         {/* warm vignette: on phones it only blends the photo into the copy below; from sm up the copy sits on it */}
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(22,18,15,.9)_0%,transparent_22%)] sm:bg-[linear-gradient(to_top,rgba(22,18,15,.92)_0%,rgba(22,18,15,.35)_40%,transparent_70%)]" />
       </div>
