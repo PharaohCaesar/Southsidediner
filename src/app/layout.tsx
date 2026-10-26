@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Anton, Barlow, Pacifico, Special_Elite } from 'next/font/google';
+import { Anton, Barlow, Kalam, Pacifico, Special_Elite } from 'next/font/google';
 import './globals.css';
 import { SITE } from '@/lib/site';
 import { SmoothScroll } from '@/components/fx/smooth-scroll';
@@ -13,6 +13,8 @@ const anton = Anton({ weight: '400', subsets: ['latin'], variable: '--font-anton
 const barlow = Barlow({ weight: ['400', '500', '600', '700'], subsets: ['latin'], variable: '--font-barlow' });
 const pacifico = Pacifico({ weight: '400', subsets: ['latin'], variable: '--font-pacifico' });
 const ticket = Special_Elite({ weight: '400', subsets: ['latin'], variable: '--font-ticket' });
+// Ballpoint handwriting for anything written on a guest check.
+const ink = Kalam({ weight: ['400', '700'], subsets: ['latin'], variable: '--font-ink' });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -36,7 +38,7 @@ export const viewport: Viewport = { themeColor: '#c8102e' };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${anton.variable} ${barlow.variable} ${pacifico.variable} ${ticket.variable}`}>
+    <html lang="en" className={`${anton.variable} ${barlow.variable} ${pacifico.variable} ${ticket.variable} ${ink.variable}`}>
       <body className="min-h-screen flex flex-col">
         <a
           href="#main"

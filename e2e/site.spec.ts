@@ -17,8 +17,8 @@ test.describe('southsidediner.net', () => {
       for (let x = 5; x < box.width; x += 40) await page.mouse.move(box.x + x, y);
     }
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Come and get it', { timeout: 8000 });
-    await expect(page.getByText("Order's up.")).toBeVisible();
-    await page.getByRole('button', { name: 'Start over' }).click();
+    await expect(page.getByText(/^Order's up: .+\.$/)).toBeVisible();
+    await page.getByRole('button', { name: /Next dish/ }).click();
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Rise and shine');
     // "Cook it for me" also finishes.
     await page.getByRole('button', { name: 'Cook it for me' }).click();

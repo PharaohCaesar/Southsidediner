@@ -1,4 +1,4 @@
-import { SITE } from '@/lib/site';
+import { AWARDS, SITE } from '@/lib/site';
 
 /** Restaurant structured data. Hours mirror SITE.hours; the live state lives in Akelt. */
 export function JsonLd() {
@@ -15,6 +15,7 @@ export function JsonLd() {
     priceRange: '$',
     acceptsReservations: false,
     foundingDate: String(SITE.since),
+    award: AWARDS.map((a) => `${a.title}, ${a.source} ${a.year}`),
     address: {
       '@type': 'PostalAddress',
       streetAddress: SITE.address.line1,

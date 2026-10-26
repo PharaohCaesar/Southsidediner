@@ -1,11 +1,12 @@
 import Link from 'next/link';
 import { SITE } from '@/lib/site';
+import { GuestCheck } from '@/components/guest-check';
 
 export function VisitBand() {
   return (
     <section className="relative overflow-hidden bg-mint py-16 text-ink" aria-labelledby="visit-h">
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 md:grid-cols-3">
-        <div className="md:col-span-2">
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 md:grid-cols-[1fr_360px]">
+        <div>
           <p className="font-script text-3xl text-cherry">Come on in</p>
           <h2 id="visit-h" className="font-display text-5xl uppercase leading-[.95] tracking-wide">
             {SITE.hoursSummary}
@@ -26,14 +27,16 @@ export function VisitBand() {
             </Link>
           </div>
         </div>
-        <div className="ticket ticket-edge self-start px-6 pb-6 pl-12 pt-6 rotate-1">
-          <p className="border-b-[3px] border-double border-cherry/70 pb-1 text-xs font-bold uppercase tracking-[.2em]">Guest check</p>
-          <p className="mt-3 text-lg uppercase">Order ahead</p>
-          <p className="mt-1 text-sm">Skip the line. Ready in about 20 minutes.</p>
-          <a href={SITE.akeltOrigin} data-akelt-order="/" data-bell className="mt-4 inline-flex min-h-[44px] items-center rounded bg-cherry px-5 text-sm font-bold uppercase tracking-[.12em] text-white hover:bg-cherry-deep">
-            Start an order
-          </a>
-        </div>
+        <GuestCheck number="6002008" table="To go" guests="1" server="You" prices className="rotate-1 self-start">
+          <p className="ink flex justify-between text-xl"><span>Order ahead</span><span className="-mr-[66px] w-14 text-right">✓</span></p>
+          <p className="ink text-xl">Skip the line —</p>
+          <p className="ink text-xl">ready in about 20 min.</p>
+          <div className="py-2">
+            <a href={SITE.akeltOrigin} data-akelt-order="/" data-bell className="inline-flex min-h-[44px] items-center rounded-sm bg-[#2d4f9e] px-5 font-display text-[15px] uppercase tracking-[.14em] text-white hover:bg-[#223e80]">
+              Start an order
+            </a>
+          </div>
+        </GuestCheck>
       </div>
     </section>
   );

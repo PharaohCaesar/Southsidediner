@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { SITE } from '@/lib/site';
+import { GRIDDLE, SITE } from '@/lib/site';
 import { sizzle, ding } from '@/components/fx/sound';
 
 // "Fire up the griddle." A raw breakfast sits on a cold flat-top (canvas). Hover or drag
@@ -13,6 +13,7 @@ import { sizzle, ding } from '@/components/fx/sound';
 const GRID_W = 64;
 const GRID_H = 36;
 const DONE_AT = 0.7;
+const DISH_KEY = 'ssd.dish';
 
 type Particle = { x: number; y: number; vx: number; vy: number; life: number; max: number; r: number };
 
@@ -29,9 +30,14 @@ export function GriddleHero() {
   const [done, setDone] = useState(false);
   const [ready, setReady] = useState(false);
   const [touched, setTouched] = useState(false);
+  // Which real dish is on the griddle. Chosen on the client (each visit rotates to the
+  // next dish), so the server renders the dark griddle and the images fade in.
+  const [dish, setDish] = useState<number | null>(null);
+  const dishRef = useRef(0);
 
   // Client-only (runs inside paintRaw after mount), so the width check is safe here.
-  const src = (which: 'raw' | 'cooked') => `/images/griddle-${which}${window.innerWidth < 900 ? '-1280' : ''}.webp`;
+  const src = (which: 'raw' | 'cooked') =>
+    `/images/griddle-${GRIDDLE[dishRef.current].slug}-${which}${window.innerWidth < 900 ? '-1280' : ''}.webp`;
 
   // Draw the raw frame to the canvas at the canvas's own resolution.
   const paintRaw = useCallback(() => {
@@ -67,12 +73,26 @@ export function GriddleHero() {
     };
   }, []);
 
+  // Pick this visit's dish: the one after last visit's.
   useEffect(() => {
+    let n = 0;
+    try {
+      const last = Number(localStorage.getItem(DISH_KEY));
+      n = Number.isInteger(last) && last >= 0 ? (last + 1) % GRIDDLE.length : 0;
+      localStorage.setItem(DISH_KEY, String(n));
+    } catch {}
+    const id = requestAnimationFrame(() => setDish(n));
+    return () => cancelAnimationFrame(id);
+  }, []);
+
+  useEffect(() => {
+    if (dish === null) return;
+    dishRef.current = dish;
     paintRaw();
     const ro = new ResizeObserver(() => paintRaw());
     if (wrap.current) ro.observe(wrap.current);
     return () => ro.disconnect();
-  }, [paintRaw]);
+  }, [dish, paintRaw]);
 
   // Steam particle loop.
   useEffect(() => {
@@ -184,7 +204,10 @@ export function GriddleHero() {
     requestAnimationFrame(run);
   };
 
-  const reset = () => {
+  // "Next dish": clear the griddle and put the next real dish on it.
+  const nextDish = () => {
+    const n = (dishRef.current + 1) % GRIDDLE.length;
+    try { localStorage.setItem(DISH_KEY, String(n)); } catch {}
     finishing.current = false;
     grid.current.fill(0);
     cooked.current = 0;
@@ -192,8 +215,10 @@ export function GriddleHero() {
     setPct(0);
     setDone(false);
     setTouched(false);
-    paintRaw();
+    setReady(false);
+    setDish(n);
   };
+  const current = GRIDDLE[dish ?? 0];
 
   useEffect(() => () => sizzle(false), []);
 
@@ -208,7 +233,7 @@ export function GriddleHero() {
       <div
         ref={wrap}
         data-griddle
-        className="relative aspect-[16/10] w-full select-none overflow-hidden sm:aspect-[16/8] lg:aspect-[16/7] touch-none"
+        className="relative aspect-[4/3] w-full select-none overflow-hidden sm:aspect-[16/8] lg:aspect-[16/7] touch-none"
         onPointerMove={onPointer}
         onPointerDown={(e) => {
           // Buttons and links inside the hero keep their clicks (pointer capture would
@@ -223,31 +248,40 @@ export function GriddleHero() {
         onPointerCancel={() => { dragging.current = false; }}
       >
         {/* cooked twin underneath */}
-        <picture>
-          <source media="(max-width: 899px)" srcSet="/images/griddle-cooked-1280.webp" />
-          <img src="/images/griddle-cooked.webp" alt="" className="absolute inset-0 h-full w-full object-cover" draggable={false} />
-        </picture>
+        {dish !== null && (
+          <picture key={current.slug}>
+            <source media="(max-width: 899px)" srcSet={`/images/griddle-${current.slug}-cooked-1280.webp`} />
+            <img
+              src={`/images/griddle-${current.slug}-cooked.webp`}
+              alt={`${current.dish} cooking on the Southside Diner griddle`}
+              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${ready ? 'opacity-100' : 'opacity-0'}`}
+              draggable={false}
+            />
+          </picture>
+        )}
         <canvas ref={canvas} className={`absolute inset-0 h-full w-full transition-opacity duration-500 ${ready ? 'opacity-100' : 'opacity-0'}`} />
         <canvas ref={steam} className="pointer-events-none absolute inset-0 h-full w-full" />
-        {/* warm vignette so the headline reads */}
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(22,18,15,.92)_0%,rgba(22,18,15,.35)_40%,transparent_70%)]" />
+        {/* warm vignette: on phones it only blends the photo into the copy below; from sm up the copy sits on it */}
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(22,18,15,.9)_0%,transparent_22%)] sm:bg-[linear-gradient(to_top,rgba(22,18,15,.92)_0%,rgba(22,18,15,.35)_40%,transparent_70%)]" />
+      </div>
 
-        {/* copy */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 px-4 pb-6 sm:px-8 sm:pb-10 lg:px-12">
+      {/* copy: below the photo on phones so the food stays visible, overlaid on it from sm up.
+          pointer-events-none lets hovers fall through to the griddle underneath. */}
+      <div className="pointer-events-none relative px-4 pb-8 pt-1 sm:absolute sm:inset-x-0 sm:bottom-0 sm:px-8 sm:pb-10 sm:pt-0 lg:px-12">
           <div className="mx-auto max-w-7xl">
             <p className="font-script text-2xl text-mustard sm:text-3xl">
-              {done ? "Order's up." : touched ? 'Keep it moving…' : 'Family owned in Parma since 2008'}
+              {done ? `Order's up: ${current.dish}.` : touched ? 'Keep it moving…' : 'Family owned in Parma since 2008'}
             </p>
             <h1 className="mt-1 font-display text-[12vw] leading-[.9] uppercase tracking-[.02em] sm:text-7xl lg:text-8xl">
-              <span className={`neon ${done ? '' : ''}`} style={{ ['--neon-color' as string]: done ? 'var(--neon)' : 'var(--neon-blue)' }}>
+              <span className="neon" style={{ ['--neon-color' as string]: done ? 'var(--neon)' : 'var(--neon-blue)' }}>
                 {done ? 'Come and get it' : 'Rise and shine,'}
               </span>
               <br />
-              <span className="text-cream">{done ? 'Parma.' : 'Parma.'}</span>
+              <span className="text-cream">Parma.</span>
             </h1>
             <p className="mt-3 max-w-xl text-base text-white/80 sm:text-lg">
               {done
-                ? 'Corned beef hash, two eggs, peppered bacon. Made from scratch every morning, ready for pickup in 20 minutes.'
+                ? `${current.line} Made from scratch every morning, ready for pickup in about 20 minutes.`
                 : 'Run the spatula over the griddle to cook breakfast. Or let us do it, like always.'}
             </p>
             <div className="pointer-events-auto mt-5 flex flex-wrap items-center gap-3">
@@ -255,9 +289,10 @@ export function GriddleHero() {
                 href={SITE.akeltOrigin}
                 data-akelt-order="/"
                 data-bell
-                className="ticket ticket-edge inline-flex min-h-[52px] items-center px-6 pl-10 font-ticket text-[15px] uppercase tracking-[.12em] text-carbon transition hover:-translate-y-0.5 hover:rotate-[-1deg]"
+                className="check-tab inline-flex min-h-[52px] flex-col justify-center rounded-b-sm px-5 leading-none transition hover:-translate-y-0.5 hover:rotate-[-1deg]"
               >
-                Order online
+                <span className="font-display text-[22px] tracking-[.02em]">Order online</span>
+                <span className="mt-0.5 text-[9px] font-bold uppercase tracking-[.16em] text-[#d8432e]">Guest check · pickup</span>
               </a>
               {!done ? (
                 <button
@@ -270,10 +305,10 @@ export function GriddleHero() {
               ) : (
                 <button
                   type="button"
-                  onClick={reset}
+                  onClick={nextDish}
                   className="inline-flex min-h-[48px] items-center rounded-full border border-white/30 px-5 text-sm font-semibold text-white/90 backdrop-blur hover:border-mustard hover:text-mustard"
                 >
-                  Start over
+                  Next dish →
                 </button>
               )}
               <span className="ml-1 text-xs font-semibold uppercase tracking-[.2em] text-white/50" aria-live="polite">
@@ -281,7 +316,6 @@ export function GriddleHero() {
               </span>
             </div>
           </div>
-        </div>
       </div>
     </section>
   );

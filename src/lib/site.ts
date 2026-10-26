@@ -24,7 +24,6 @@ export const SITE = {
     encodeURIComponent('Southside Diner 10705 W. Pleasant Valley Rd., Parma, OH 44130'),
   akeltOrigin: process.env.NEXT_PUBLIC_AKELT_ORIGIN ?? 'https://akelt-ordering.vercel.app',
   url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://southsidediner.net',
-  owners: 'Caesar Farah and his son John-Paul',
 } as const;
 
 export const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -82,23 +81,102 @@ export const SIGNATURES = [
   },
 ] as const;
 
-/** Press. Quotes are short excerpts; each links to the source. */
+/** Awards. Source: the Southside press archive (Dropbox, "12-Frame Newsprint Collection"). */
+export const AWARDS = [
+  {
+    title: 'Best Diner',
+    source: 'Cleveland Scene · Best of Cleveland',
+    year: 2016,
+    quote: 'first-time visitors at Southside Diner feel at home',
+    url: null,
+  },
+  {
+    title: "Ohio's Best Diner",
+    source: 'PureWow · The Best Diner in Every State',
+    year: 2017,
+    quote: "It's time you've met the corned beef stacker",
+    url: 'https://www.purewow.com/food/best-diner-in-every-state',
+  },
+] as const;
+
+/** Fox 8 New Day Cleveland segments. */
+export const TV = [
+  { year: 2016, title: 'Breakfast at the diner, with David Moss', url: 'https://www.youtube.com/watch?v=V0a2sjsN5IY&t=265s' },
+  { year: 2022, title: 'A taste of Southside Diner', url: 'https://www.youtube.com/watch?v=Pjww_P7vgLc' },
+  { year: 2024, title: 'In the New Day Cleveland kitchen', url: 'https://www.youtube.com/watch?v=PkB4bauE30E&t=490s' },
+] as const;
+
+/**
+ * Press, newest first. Every quote is verbatim from the article (as captured in the press
+ * archive); never paraphrase inside quotation marks.
+ */
 export const PRESS = [
   {
-    outlet: 'Cleveland Magazine',
-    quote: 'While it may not technically be a time machine, Southside transports us back to our childhood.',
-    url: 'https://clevelandmagazine.com/food-drink/grab-a-quick-bite-at-southside-diner',
+    year: 2026, outlet: 'Cleveland Magazine', title: "Parma's Best Restaurants",
+    quote: 'Red counter stools, checkered floors and an open kitchen',
+    url: 'https://www.clevelandmagazine.com/articles/parmas-best-restaurants/',
   },
   {
-    outlet: 'Cleveland Scene',
-    quote: 'Praise for the burgers — the Ranchero is the pick.',
-    url: 'https://www.clevescene.com/?p=106724',
+    year: 2023, outlet: 'Cleveland Scene', title: '32 Cleveland Diners and Delis You Should Have Tried by Now',
+    quote: 'this little Parma treasure',
+    url: 'https://www.clevescene.com/food-drink/32-cleveland-diners-and-delis-you-should-have-tried-by-now-41432542/',
   },
   {
-    outlet: 'Family Destinations Guide',
-    quote: 'Beloved homemade breakfast — the corned beef hash is the reason to drive out.',
-    url: 'https://familydestinationsguide.com/ohio-corned-beef-diner/',
+    year: 2023, outlet: 'Cleveland Scene', title: '25 Essential Parma Restaurants, According to Reddit',
+    quote: 'Southside Diner is my favorite breakfast place.',
+    url: 'https://www.clevescene.com/news/24-essential-parma-restaurants-according-to-reddit-41211735/',
   },
+  {
+    year: 2021, outlet: 'Cleveland Magazine', title: "Cleveland Taco Guide: Southside Diner's Breakfast Tacos Wake You Up Right",
+    quote: 'simple, balanced breakfast tacos that pack a punch',
+    url: 'https://clevelandmagazine.com/articles/cleveland-taco-guide-southside-diners-breakfast-tacos-wake-you-up-right/',
+  },
+  {
+    year: 2021, outlet: 'Cleveland Scene', title: '32 Spots to Grab Some of the Best Corned Beef in Cleveland',
+    quote: 'some of the best corned beef hash in town',
+    url: 'https://www.clevescene.com/arts/32-spots-to-grab-some-of-the-best-corned-beef-in-cleveland-38342914/',
+  },
+  {
+    year: 2020, outlet: 'Cleveland Scene', title: '21 Hole-in-the-Wall Cleveland Burger Spots You Should Have Tried By Now',
+    quote: "it's the burgers we love.",
+    url: 'https://www.clevescene.com/arts/21-hole-in-the-wall-cleveland-burger-spots-you-should-have-tried-by-now-38342860/',
+  },
+  {
+    year: 2016, outlet: 'Cleveland Magazine', title: 'Grab a Quick Bite at Southside Diner',
+    quote: 'the lost art of customer service',
+    url: 'https://clevelandmagazine.com/articles/grab-a-quick-bite-at-southside-diner/',
+  },
+  {
+    year: 2016, outlet: 'Patch', title: '4 Best Breakfasts Near Strongsville',
+    quote: "I'm obsessed with breakfast here.",
+    url: 'https://patch.com/ohio/strongsville/4-best-breakfasts-near-strongsville-0',
+  },
+  {
+    year: 2015, outlet: 'Cleveland Scene', title: 'The Best Restaurants in Cleveland, According to Yelp',
+    quote: '7. Southside Diner – 63 reviews, 4.5 stars',
+    url: 'https://www.clevescene.com/food-drink/the-best-restaurants-in-cleveland-according-to-yelp-4488954/',
+  },
+] as const;
+
+/** The three quotes featured on the home page (indexes into PRESS). */
+export const FEATURED_PRESS = [PRESS[4], PRESS[6], PRESS[1]] as const;
+
+/** Stacker's Yelp-based Cleveland lists. */
+export const LISTS = [
+  { year: 2025, label: '#8 highest-rated café in the Cleveland area', url: 'https://stacker.com/stories/ohio/cleveland/highest-rated-cafes-cleveland-area-diners' },
+  { year: 2022, label: '#22 highest-rated cheap eats in Cleveland', url: 'https://stacker.com/stories/ohio/cleveland/highest-rated-cheap-eats-cleveland-diners' },
+] as const;
+
+/**
+ * Hero griddle scenes, each built from a real Southside dish photo (AI, GPT Image 2.5 via
+ * Higgsfield; raw twin derived from the cooked frame). Files: public/images/griddle-<slug>-{raw,cooked}[-1280].webp
+ */
+export const GRIDDLE = [
+  { slug: 'hash', dish: 'Corned Beef Hash', line: 'Our signature corned beef hash, scrambled eggs and peppered bacon.' },
+  { slug: 'potato', dish: 'Potato Pancake Combo', line: 'Homemade potato pancakes, two eggs, peppered bacon and sausage links.' },
+  { slug: 'sweet', dish: 'Pancakes & French Toast', line: 'Blueberry buttermilk pancakes and golden French toast, sweet and fluffy.' },
+  { slug: 'gyro', dish: 'Gyro Hash', line: 'Hand-shaved gyro meat on crispy hash browns with tomatoes and two eggs.' },
+  { slug: 'chorizo', dish: 'Chorizo Hash', line: 'Chorizo, crispy hash browns, two eggs, jalapeño and cilantro.' },
 ] as const;
 
 /** The specials board. Edited here until the Akelt specials editor ships. */

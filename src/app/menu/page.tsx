@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import { fetchMenu, formatPrice } from '@/lib/akelt';
 import { SITE } from '@/lib/site';
+import { GuestCheck } from '@/components/guest-check';
 
 export const metadata: Metadata = {
   title: 'Menu',
@@ -39,13 +40,15 @@ export default async function MenuPage() {
 
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
         {cats.length === 0 ? (
-          <div className="ticket ticket-edge mx-auto max-w-md px-8 pb-8 pl-12 pt-8 text-center">
-            <p className="text-lg uppercase">The menu is being written up.</p>
-            <p className="mt-2 text-sm">Give us a call — {SITE.phone}</p>
-            <a href={SITE.akeltOrigin} data-akelt-order="/" className="mt-4 inline-block rounded bg-cherry px-5 py-3 text-sm font-bold uppercase tracking-wider text-white">
-              See the menu on the ordering page
-            </a>
-          </div>
+          <GuestCheck number="6000086" server="Kitchen" className="mx-auto max-w-md">
+            <p className="ink text-2xl font-bold">The menu is being written up.</p>
+            <p className="ink text-xl">Give us a call — {SITE.phone}</p>
+            <div className="py-2">
+              <a href={SITE.akeltOrigin} data-akelt-order="/" className="inline-flex min-h-[44px] items-center rounded-sm bg-[#2d4f9e] px-5 font-display text-[15px] uppercase tracking-[.14em] text-white">
+                See the menu on the ordering page
+              </a>
+            </div>
+          </GuestCheck>
         ) : (
           <div className="space-y-16">
             {cats.map((c) => (
@@ -75,7 +78,7 @@ export default async function MenuPage() {
                           <span className="flex items-baseline gap-2">
                             <span className="font-display text-xl uppercase tracking-wide text-ink group-hover:text-cherry">{it.name}</span>
                             <span className="flex-1 border-b border-dotted border-ink/30" aria-hidden />
-                            <span className="font-ticket text-base text-carbon">{formatPrice(it.price_cents, menu?.restaurant.currency)}</span>
+                            <span className="ink text-lg text-[#1e3a9e]">{formatPrice(it.price_cents, menu?.restaurant.currency)}</span>
                           </span>
                           {it.description && <span className="mt-1 block text-sm text-ink-soft">{it.description}</span>}
                           {!it.available && <span className="mt-1 block text-xs font-bold uppercase tracking-wider text-cherry">86&apos;d today</span>}

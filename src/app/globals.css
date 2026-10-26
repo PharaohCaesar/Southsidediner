@@ -107,16 +107,57 @@ body {
 }
 @keyframes chrome-glint { 0%, 70% { transform: translateX(-120%); } 85%, 100% { transform: translateX(120%); } }
 
-/* ─── Guest-check ticket ──────────────────────────────────────────────── */
-.ticket {
-  background: var(--paper);
-  background-image: repeating-linear-gradient(transparent 0 27px, rgba(31,59,115,.14) 27px 28px);
-  color: var(--carbon);
-  font-family: var(--font-ticket), "Courier New", monospace;
+/* ─── Guest check: modeled on the FMP 2-part pads the diner actually uses ─────
+   Mint-green sheet, bold blue "Guest Check", Date/Table/Guests/Server boxes with a red
+   check number, the course line, green ruled lines with a price column, and
+   "Thank You — Please Come Again" at the foot. The yellow copy is the kitchen check. */
+.guest-check {
+  --gc-paper: #d4ecdd;
+  --gc-rule: rgba(52, 128, 92, .42);
+  --gc-frame: #4f8f72;
+  --gc-blue: #2d4f9e;
+  --gc-pen: #1e3a9e;
+  --gc-red: #d8432e;
   position: relative;
-  box-shadow: 0 18px 40px rgba(0,0,0,.25);
+  background: var(--gc-paper);
+  color: var(--gc-blue);
+  font-family: var(--font-barlow), system-ui, sans-serif;
+  box-shadow: 0 18px 40px rgba(0,0,0,.22), 0 1px 0 rgba(255,255,255,.6) inset;
 }
-.ticket::before { content: ""; position: absolute; top: 0; bottom: 0; left: 30px; border-left: 2px solid rgba(200,16,46,.6); }
+.guest-check--kitchen { --gc-paper: #f6efb5; --gc-rule: rgba(150, 132, 40, .38); --gc-frame: #a39443; }
+/* pad binding along the top */
+.guest-check::before {
+  content: ""; display: block; height: 12px;
+  background:
+    linear-gradient(90deg, transparent 0 18%, #9aa7a0 18% 26%, transparent 26% 74%, #9aa7a0 74% 82%, transparent 82%) center 5px / 100% 2px no-repeat,
+    linear-gradient(#eef3f0, #dfe7e3);
+}
+.gc-title { display: block; padding: 10px 14px 4px; font-family: var(--font-anton), Impact, sans-serif; font-size: 2.35rem; line-height: 1; letter-spacing: .01em; color: var(--gc-blue); }
+.gc-boxes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 1.5fr); margin: 0 12px; border: 1.5px solid var(--gc-frame); }
+.gc-boxes > div { padding: 1px 6px 3px; border-right: 1.5px solid var(--gc-frame); min-height: 34px; }
+.gc-boxes > div:last-child { border-right: 0; }
+.gc-boxes span { display: block; font-size: 9px; font-weight: 600; letter-spacing: .04em; color: var(--gc-frame); }
+.gc-boxes b { display: block; font-family: var(--font-ink), cursive; font-weight: 400; font-size: 15px; line-height: 1.1; color: var(--gc-pen); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gc-no { display: grid !important; place-items: center; font-size: 19px; font-weight: 600; letter-spacing: .06em; color: var(--gc-red) !important; }
+.gc-courses { margin: 4px 12px 0; padding-bottom: 3px; border-bottom: 2px solid var(--gc-frame); font-size: 9.5px; font-weight: 700; letter-spacing: .08em; color: var(--gc-blue); white-space: nowrap; overflow: hidden; text-overflow: clip; }
+.gc-body {
+  margin: 0 12px; padding: 0 8px 4px;
+  line-height: 32px;
+  background-image: repeating-linear-gradient(transparent 0 31px, var(--gc-rule) 31px 32px);
+}
+.gc-body--prices {
+  padding-right: 74px;
+  background-image:
+    linear-gradient(to right, transparent calc(100% - 64px), var(--gc-rule) calc(100% - 64px) calc(100% - 62.5px), transparent calc(100% - 62.5px)),
+    repeating-linear-gradient(transparent 0 31px, var(--gc-rule) 31px 32px);
+}
+.gc-foot { margin: 0 12px; padding: 6px 0 10px; border-top: 2px solid var(--gc-frame); text-align: center; font-size: 12px; font-weight: 600; color: var(--gc-blue); }
+.ink { font-family: var(--font-ink), cursive; color: var(--gc-pen, #1e3a9e); }
+/* A torn-off check used as a button. */
+.check-tab {
+  background: #d4ecdd; color: #2d4f9e; box-shadow: 0 10px 24px rgba(0,0,0,.28);
+  border-top: 3px dotted #9fb9ab;
+}
 .ticket-edge {
   -webkit-mask: radial-gradient(circle at 8px 0, transparent 5px, #000 5.5px) -8px 0 / 16px 100%;
   mask: radial-gradient(circle at 8px 0, transparent 5px, #000 5.5px) -8px 0 / 16px 100%;

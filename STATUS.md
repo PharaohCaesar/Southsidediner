@@ -27,7 +27,8 @@ press, the specials board, job perks). Components never hardcode them.
 ## Stack
 
 Next.js 16 (App Router, Turbopack) · React 19 · Tailwind v4 · Lenis · Resend (forms) ·
-next/font (Anton = Googie display, Barlow = body, Pacifico = script, Special Elite = guest-check).
+next/font (Anton = Googie display, Barlow = body, Pacifico = script, Kalam = guest-check ink,
+UnifrakturMaguntia = press-archive masthead).
 
 ## Routes
 
@@ -40,18 +41,24 @@ form → `/api/contact`) · `sitemap.xml` · `robots.txt`. `/gallery` → `/stor
 
 - **Griddle hero** `components/hero/griddle-hero.tsx`: raw frame on a canvas over its cooked twin;
   hover (desktop) or drag (touch) erases with a soft brush; a 64×36 grid computes "% cooked";
-  at 70% the rest sizzles through, the headline swaps to "Come and get it, Parma / Order's up";
-  steam particles rise wherever you've cooked; "Cook it for me" / "Start over".
-  Images: `assets-src/griddle-{cooked,raw}.jpg` (AI, GPT Image 2.5 via Higgsfield; kept as q93 JPEG masters in git; raw derived
-  from cooked with "keep camera identical"; alignment checked with a 50/50 blend) →
-  `npm run images` → `public/images/griddle-*.webp` (+ `-1280` for phones). **Replace with a real
-  tripod pair when shot** (same filenames = zero code change).
+  at 70% the rest sizzles through, the headline swaps to "Come and get it" + "Order's up: <dish>.";
+  steam particles rise wherever you've cooked; "Cook it for me" / "Next dish →".
+  **Five real dishes rotate** (`GRIDDLE` in `site.ts`: hash, potato pancakes, sweet/pancakes +
+  French toast, gyro, chorizo), next one per visit (localStorage `ssd.dish`), chosen client-side so
+  there's no hydration mismatch. Masters `assets-src/griddle-<slug>-{raw,cooked}.jpg` (AI, GPT Image
+  2.5 via Higgsfield, dish photos from the Dropbox as references; raw derived from cooked with "keep
+  camera identical") → `npm run images` → `public/images/griddle-<slug>-*.webp` (+ `-1280` for phones).
+  **Phones:** the photo is a 4:3 frame with the copy + buttons BELOW it (nothing covers the food);
+  from `sm` up the copy overlays the photo. Replace with real tripod pairs when shot (same filenames).
 - **Spatula cursor** `fx/spatula.tsx`: chrome dot + neon halo; spatula over the griddle, counter
   bell over order buttons, handset over phone links. Fine-pointer devices only.
 - **Split-flap board** `fx/split-flap.tsx` (aria-hidden flaps, resolved text is the a11y text).
 - **Jukebox** `jukebox.tsx`: 7 signature dishes as title cards, 45 spins, dish swings in.
 - **Neon** utilities (`.neon`, `.neon-tube`, flicker), **checkerboard floor** in perspective,
-  **chrome strips** with a glint, **guest-check tickets** (`.ticket`), **starburst** badges,
+  **chrome strips** with a glint, **guest checks** modeled on the restaurant's real FMP 2-part pads (`components/guest-check.tsx`,
+  `.guest-check`: mint sheet, blue "Guest Check", Date/Table/Guests/Server boxes, red number, course
+  line, green rules, "Thank You — Please Come Again"; yellow `--kitchen` copy; Kalam handwriting) — used
+  by the forms, the visit band, the menu fallback and the hero's torn-off "Order online" tab, **starburst** badges,
   **polaroids** + Kodachrome filter, CSS **steam**, **milkshake** scroll progress,
   **receipt** footer printing line by line.
 - **Sounds** `fx/sound.tsx`: Web Audio bell (`[data-bell]`) + griddle sizzle, off by default, toggle
@@ -60,14 +67,20 @@ form → `/api/contact`) · `sitemap.xml` · `robots.txt`. `/gallery` → `/stor
 
 ## Current state (2026-10-26)
 
-Built and verified locally against the Akelt mock env: tsc + eslint clean; **6/6 Playwright e2e**
-(`npm run test:e2e`: hero cooks → flips → resets, board/jukebox/receipt, menu from Akelt, forms
-validation + honeypot + 503-until-configured, redirects/sitemap/schema, phone nav + touch cook).
-Desktop + phone screenshots reviewed.
+Built and verified locally against the Akelt mock env: tsc + eslint clean; **7/7 Playwright e2e**
+(`npm run test:e2e`). Desktop + phone screenshots reviewed.
 
-**Not yet:** Vercel project + domain (southsidediner.net is on Webflow), Resend env
-(`RESEND_API_KEY`, `RESEND_FROM`, `LEADS_TO`) so the forms deliver, `NEXT_PUBLIC_AKELT_ORIGIN`
-pointed at the production Akelt host, Google Business Profile hours check.
+- **Press + awards** (from the Dropbox "Southside-Diner-12-Frame-Newsprint-Collection.pdf"):
+  `AWARDS` (Best Diner, Scene Best of Cleveland 2016; Ohio's Best Diner, PureWow 2017), `TV` (three
+  Fox 8 New Day Cleveland segments), `PRESS` (9 clippings, VERBATIM quotes + article links), `LISTS`
+  (Stacker). Home story strip shows awards + 3 quotes; `/story` has a newsprint press archive; JSON-LD
+  carries `award`.
+- **"Family", not names** — the owners are never named on the site (JP's call).
+- Guest checks + five-dish hero + phone hero layout (see Effects).
+
+**Not yet:** custom domain (southsidediner.net is on Webflow), Resend env (`RESEND_API_KEY`,
+`RESEND_FROM`, `LEADS_TO`) so the forms deliver, `NEXT_PUBLIC_AKELT_ORIGIN` check on Vercel,
+Google Business Profile hours check.
 
 ## Next up
 
@@ -84,4 +97,6 @@ pointed at the production Akelt host, Google Business Profile hours check.
   Only capture for touch/pen, and never when the pointerdown target is a link or button.
 - `role="alert"` test selectors must be scoped to the form (Next's route announcer is an alert).
 - Ticket numbers and image sources must be deterministic at render (hydration mismatch otherwise).
+- **Never paraphrase inside quotation marks.** Press quotes are verbatim from the clippings; two
+  invented "quotes" had to be pulled. If it isn't in the article, it isn't in quotes.
 - Always use absolute paths in scripted file writes; a `cd` that silently fails sends files to the wrong project.
