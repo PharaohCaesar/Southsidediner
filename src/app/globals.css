@@ -1,0 +1,142 @@
+@import "tailwindcss";
+
+/* ─── 1950s diner palette ─────────────────────────────────────────────── */
+:root {
+  --cherry: #c8102e;
+  --cherry-deep: #8f0b20;
+  --cream: #fff6e3;
+  --cream-deep: #f3e6c8;
+  --mint: #9fd9cf;
+  --mint-deep: #3aa99a;
+  --mustard: #f2b134;
+  --chrome: #d9dde2;
+  --chrome-dark: #8d949c;
+  --ink: #16120f;
+  --ink-soft: #4a423b;
+  --paper: #fbf4e2;
+  --carbon: #1f3b73;
+  --neon: #ff2f6d;
+  --neon-blue: #4ad6ff;
+}
+
+@theme inline {
+  --color-cherry: var(--cherry);
+  --color-cherry-deep: var(--cherry-deep);
+  --color-cream: var(--cream);
+  --color-cream-deep: var(--cream-deep);
+  --color-mint: var(--mint);
+  --color-mint-deep: var(--mint-deep);
+  --color-mustard: var(--mustard);
+  --color-chrome: var(--chrome);
+  --color-chrome-dark: var(--chrome-dark);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-paper: var(--paper);
+  --color-carbon: var(--carbon);
+  --color-neon: var(--neon);
+  --color-neon-blue: var(--neon-blue);
+  --font-sans: var(--font-barlow);
+  --font-display: var(--font-anton);
+  --font-script: var(--font-pacifico);
+  --font-ticket: var(--font-ticket);
+}
+
+html { scroll-behavior: auto; }
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+::selection { background: var(--cherry); color: #fff; }
+
+/* ─── Neon ────────────────────────────────────────────────────────────── */
+.neon {
+  color: #fff;
+  text-shadow:
+    0 0 4px #fff,
+    0 0 10px var(--neon-color, var(--neon)),
+    0 0 24px var(--neon-color, var(--neon)),
+    0 0 48px var(--neon-color, var(--neon));
+  animation: neon-flicker 11s infinite;
+}
+.neon-off { color: rgba(255,255,255,.14); text-shadow: none; animation: none; }
+.neon-tube {
+  border: 2px solid var(--neon-color, var(--neon));
+  box-shadow: 0 0 10px var(--neon-color, var(--neon)), inset 0 0 10px color-mix(in srgb, var(--neon-color, var(--neon)) 40%, transparent);
+}
+@keyframes neon-flicker {
+  0%, 91%, 93.5%, 95%, 100% { opacity: 1; }
+  92% { opacity: .5; }
+  94% { opacity: .85; }
+  94.6% { opacity: .35; }
+}
+
+/* ─── Checkerboard floor in one-point perspective ─────────────────────── */
+.checker-floor {
+  position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+  perspective: 520px; perspective-origin: 50% 0%;
+}
+.checker-floor::before {
+  content: ""; position: absolute; left: -60%; right: -60%; top: 0; height: 240%;
+  background: repeating-conic-gradient(#111 0 25%, #f4ecdc 0 50%) 0 0 / 120px 120px;
+  transform: rotateX(62deg) translateY(-8%);
+  transform-origin: 50% 0;
+  animation: floor-scroll 6s linear infinite;
+  opacity: .9;
+}
+.checker-floor::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(to bottom, var(--cream) 0%, transparent 35%, transparent 70%, var(--cream) 100%);
+}
+@keyframes floor-scroll { to { background-position: 0 240px; } }
+
+/* ─── Chrome ──────────────────────────────────────────────────────────── */
+.chrome-strip {
+  height: 14px; border-radius: 999px;
+  background: linear-gradient(to bottom, #ffffff 0%, #c9ced4 18%, #f7f9fb 38%, #8d949c 60%, #e8ebee 80%, #6b727a 100%);
+  box-shadow: 0 2px 4px rgba(0,0,0,.35), inset 0 1px 0 #fff;
+  position: relative; overflow: hidden;
+}
+.chrome-strip::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,.75) 50%, transparent 70%);
+  transform: translateX(-120%);
+  animation: chrome-glint 7s ease-in-out infinite;
+}
+@keyframes chrome-glint { 0%, 70% { transform: translateX(-120%); } 85%, 100% { transform: translateX(120%); } }
+
+/* ─── Guest-check ticket ──────────────────────────────────────────────── */
+.ticket {
+  background: var(--paper);
+  background-image: repeating-linear-gradient(transparent 0 27px, rgba(31,59,115,.14) 27px 28px);
+  color: var(--carbon);
+  font-family: var(--font-ticket), "Courier New", monospace;
+  position: relative;
+  box-shadow: 0 18px 40px rgba(0,0,0,.25);
+}
+.ticket::before { content: ""; position: absolute; top: 0; bottom: 0; left: 30px; border-left: 2px solid rgba(200,16,46,.6); }
+.ticket-edge {
+  -webkit-mask: radial-gradient(circle at 8px 0, transparent 5px, #000 5.5px) -8px 0 / 16px 100%;
+  mask: radial-gradient(circle at 8px 0, transparent 5px, #000 5.5px) -8px 0 / 16px 100%;
+}
+
+/* ─── Kodachrome photo treatment ──────────────────────────────────────── */
+.kodachrome { filter: saturate(1.12) contrast(1.06) sepia(.08); }
+.polaroid { background: #fff; padding: 12px 12px 42px; box-shadow: 0 20px 40px rgba(0,0,0,.25); }
+
+/* ─── Motion helpers ──────────────────────────────────────────────────── */
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+.animate-rise { animation: rise .7s cubic-bezier(.2,.8,.2,1) both; }
+.spin-slow { animation: spin-slow 40s linear infinite; }
+
+/* Custom cursor: hidden only where the spatula takes over (pointer devices). */
+@media (hover: hover) and (pointer: fine) {
+  html.has-spatula, html.has-spatula a, html.has-spatula button, html.has-spatula label { cursor: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chrome-strip::after, .checker-floor::before { animation: none; }
+}
