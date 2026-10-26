@@ -28,6 +28,7 @@ export function Footer() {
           <nav aria-label="Footer" className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm sm:grid-cols-3">
             <Link href="/menu" className="hover:text-mustard">Menu</Link>
             <Link href="/story" className="hover:text-mustard">Our story</Link>
+            <Link href="/press" className="hover:text-mustard">In the news</Link>
             <Link href="/jobs" className="hover:text-mustard">Join the team</Link>
             <Link href="/contact" className="hover:text-mustard">Find us</Link>
             <a href={SITE.akeltOrigin} data-akelt-order="/" className="hover:text-mustard">Order online</a>

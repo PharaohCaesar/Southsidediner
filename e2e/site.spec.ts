@@ -40,6 +40,18 @@ test.describe('southsidediner.net', () => {
     await expect(tag).toHaveCount(0);
   });
 
+  test('Our story links to In the news, which has the awards, video and clippings', async ({ page }) => {
+    await page.goto('/story');
+    await expect(page.getByRole('heading', { name: /Best Diner 2016/ })).toBeVisible();
+    await page.getByRole('link', { name: /In the news/ }).first().click();
+    await expect(page).toHaveURL(/\/press$/);
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('In the news');
+    await expect(page.getByRole('heading', { name: 'On camera' })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Yelp Cleveland/ })).toHaveAttribute('href', /instagram\.com\/reel\//);
+    await expect(page.getByRole('heading', { name: 'In print' })).toBeVisible();
+    expect(await page.locator('main a[href*="youtube.com"]').count()).toBe(3);
+  });
+
   test('home: board, jukebox, story, visit band, and receipt all render', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByRole('img', { name: 'Corned Beef Hash & Eggs' })).toBeVisible();

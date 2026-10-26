@@ -55,9 +55,14 @@ export function StoryStrip() {
               </li>
             ))}
           </ul>
-          <Link href="/story" className="mt-6 inline-flex min-h-[46px] items-center rounded-full border-2 border-ink px-6 font-display text-[15px] uppercase tracking-[.12em] text-ink transition hover:bg-ink hover:text-cream">
-            Our story &amp; press
-          </Link>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link href="/story" className="inline-flex min-h-[46px] items-center rounded-full border-2 border-ink px-6 font-display text-[15px] uppercase tracking-[.12em] text-ink transition hover:bg-ink hover:text-cream">
+              Our story
+            </Link>
+            <Link href="/press" className="inline-flex min-h-[46px] items-center rounded-full border-2 border-ink px-6 font-display text-[15px] uppercase tracking-[.12em] text-ink transition hover:bg-ink hover:text-cream">
+              In the news
+            </Link>
+          </div>
         </div>
       </div>
     </section>
