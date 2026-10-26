@@ -63,7 +63,7 @@ export default function StoryPage() {
               <span className="relative block aspect-square overflow-hidden">
                 <Image src={src} alt={cap} fill sizes="(max-width: 768px) 50vw, 33vw" className="kodachrome object-cover" />
               </span>
-              <span className="absolute bottom-3 left-0 right-0 text-center font-script text-lg text-ink">{cap}</span>
+              <span className="polaroid-cap font-script text-lg text-ink">{cap}</span>
             </li>
           ))}
         </ul>

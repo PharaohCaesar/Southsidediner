@@ -11,7 +11,7 @@ export function StoryStrip() {
         <div className="relative">
           <div className="polaroid rotate-[-2deg]">
             <Image src="/photos/spread.jpg" alt="A table full of Southside breakfast: pancakes, omelettes, hash and waffles" width={1800} height={1200} className="kodachrome" sizes="(max-width: 1024px) 100vw, 600px" />
-            <p className="absolute bottom-3 left-0 right-0 text-center font-script text-2xl text-ink">Saturday, 9:40 AM</p>
+            <p className="polaroid-cap font-script text-2xl text-ink">Saturday, 9:40 AM</p>
           </div>
           <div className="absolute -right-4 -top-6 sm:-right-10">
             <Starburst text={`Since ${SITE.since}`} />
