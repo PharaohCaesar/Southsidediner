@@ -100,16 +100,17 @@ export default function StoryPage() {
             ))}
           </ul>
 
-          {/* TV */}
+          {/* TV + video interviews */}
           <div className="mt-12 border-t-4 border-double border-ink pt-6">
-            <h3 className="text-center font-display text-3xl uppercase tracking-wide">On Fox 8 New Day Cleveland</h3>
-            <ul className="mt-5 grid gap-4 sm:grid-cols-3">
+            <h3 className="text-center font-display text-3xl uppercase tracking-wide">On camera</h3>
+            <ul className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {TV.map((t) => (
                 <li key={t.url}>
-                  <a href={t.url} target="_blank" rel="noreferrer" className="group flex items-center gap-3 border border-ink p-4 transition hover:bg-ink hover:text-paper">
+                  <a href={t.url} target="_blank" rel="noreferrer" className="group flex h-full items-center gap-3 border border-ink p-4 transition hover:bg-ink hover:text-paper">
                     <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-cherry text-white" aria-hidden>▶</span>
                     <span>
                       <span className="block font-display text-xl">{t.year}</span>
+                      <span className="block text-[11px] font-bold uppercase tracking-[.2em] text-cherry group-hover:text-mustard">{t.source}</span>
                       <span className="block text-sm">{t.title}</span>
                     </span>
                   </a>

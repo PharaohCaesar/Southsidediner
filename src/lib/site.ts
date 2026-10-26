@@ -101,9 +101,10 @@ export const AWARDS = [
 
 /** Fox 8 New Day Cleveland segments. */
 export const TV = [
-  { year: 2016, title: 'Breakfast at the diner, with David Moss', url: 'https://www.youtube.com/watch?v=PkB4bauE30E&t=490s' },
-  { year: 2022, title: 'A taste of Southside Diner', url: 'https://www.youtube.com/watch?v=Pjww_P7vgLc' },
-  { year: 2024, title: 'In the New Day Cleveland kitchen', url: 'https://www.youtube.com/watch?v=V0a2sjsN5IY&t=265s' },
+  { year: 2016, source: 'Fox 8 New Day Cleveland', title: 'Breakfast at the diner, with David Moss', url: 'https://www.youtube.com/watch?v=PkB4bauE30E&t=490s' },
+  { year: 2022, source: 'Fox 8 New Day Cleveland', title: 'A taste of Southside Diner', url: 'https://www.youtube.com/watch?v=Pjww_P7vgLc' },
+  { year: 2024, source: 'Fox 8 New Day Cleveland', title: 'In the New Day Cleveland kitchen', url: 'https://www.youtube.com/watch?v=V0a2sjsN5IY&t=265s' },
+  { year: 2026, source: 'Yelp Cleveland', title: '#CarbComeback: our must-try, the blueberry muffin French toast', url: 'https://www.instagram.com/reel/DefIMGTt2pl/' },
 ] as const;
 
 /**
