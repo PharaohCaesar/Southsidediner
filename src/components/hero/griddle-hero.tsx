@@ -345,16 +345,18 @@ export function GriddleHero() {
                 href={SITE.akeltOrigin}
                 data-akelt-order="/"
                 data-bell
-                className="check-tab inline-flex min-h-[52px] flex-col justify-center rounded-b-sm px-5 leading-none transition hover:-translate-y-0.5 hover:rotate-[-1deg]"
+                className="group inline-flex min-h-[54px] items-center gap-2.5 rounded-full bg-cherry pl-5 pr-6 font-display text-xl uppercase tracking-[.12em] text-white shadow-[0_0_0_2px_rgba(255,255,255,.15),0_0_24px_rgba(200,16,46,.75)] transition hover:-translate-y-0.5 hover:bg-[#e01636] hover:shadow-[0_0_0_2px_rgba(255,255,255,.25),0_0_36px_rgba(255,47,109,.9)] sm:min-h-[58px] sm:text-[22px]"
               >
-                <span className="font-display text-[22px] tracking-[.02em]">Order online</span>
-                <span className="mt-0.5 text-[9px] font-bold uppercase tracking-[.16em] text-[#d8432e]">Guest check · pickup</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition group-hover:-rotate-12" aria-hidden>
+                  <path d="M4 18h16M5 18a7 7 0 0 1 14 0M12 8V6M10 6h4" />
+                </svg>
+                Order online
               </a>
               {!done ? (
                 <button
                   type="button"
                   onClick={() => { setTouched(true); finish(); }}
-                  className="inline-flex min-h-[48px] items-center rounded-full border border-white/30 px-5 text-sm font-semibold text-white/90 backdrop-blur hover:border-mustard hover:text-mustard"
+                  className="inline-flex min-h-[54px] items-center rounded-full border border-white/30 px-5 sm:min-h-[58px] text-sm font-semibold text-white/90 backdrop-blur hover:border-mustard hover:text-mustard"
                 >
                   Cook it for me
                 </button>
@@ -362,7 +364,7 @@ export function GriddleHero() {
                 <button
                   type="button"
                   onClick={nextDish}
-                  className="inline-flex min-h-[48px] items-center rounded-full border border-white/30 px-5 text-sm font-semibold text-white/90 backdrop-blur hover:border-mustard hover:text-mustard"
+                  className="inline-flex min-h-[54px] items-center rounded-full border border-white/30 px-5 sm:min-h-[58px] text-sm font-semibold text-white/90 backdrop-blur hover:border-mustard hover:text-mustard"
                 >
                   Next dish →
                 </button>

@@ -35,7 +35,7 @@ UnifrakturMaguntia = press-archive masthead).
 
 `/` (griddle hero → story + awards + press → split-flap board + live open state → jukebox dishes →
 mint visit band → receipt footer) · `/menu` (Akelt `/api/menu`, prices never stale, every dish opens
-the ordering popup) · `/story` · `/jobs` (application → `/api/jobs`) · `/contact` (map, hours,
+the ordering popup) · `/story` · `/press` (In the news: newsprint archive of awards, On camera, In print, Stacker) · `/jobs` (application → `/api/jobs`) · `/contact` (map, hours,
 form → `/api/contact`) · `sitemap.xml` · `robots.txt`. `/gallery` → `/story`, `/reservation` → `/contact`.
 
 ## Effects (all built)
@@ -70,7 +70,8 @@ form → `/api/contact`) · `sitemap.xml` · `robots.txt`. `/gallery` → `/stor
   **chrome strips** with a glint, **guest checks** modeled on the restaurant's real FMP 2-part pads (`components/guest-check.tsx`,
   `.guest-check`: mint sheet, blue "Guest Check", Date/Table/Guests/Server boxes, red number, course
   line, green rules, "Thank You — Please Come Again"; yellow `--kitchen` copy; Kalam handwriting) — used
-  by the forms, the visit band, the menu fallback and the hero's torn-off "Order online" tab, **starburst** badges,
+  by the forms, the visit band and the menu fallback. The hero's "Order online" is a big cherry neon
+  pill with a service bell (matches the nav + phone bar), **starburst** badges,
   **polaroids** + Kodachrome filter, CSS **steam**, **milkshake** scroll progress,
   **receipt** footer printing line by line.
 - **Sounds** `fx/sound.tsx`: Web Audio bell (`[data-bell]`) + griddle sizzle, off by default, toggle

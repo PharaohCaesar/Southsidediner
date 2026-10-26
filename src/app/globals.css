@@ -154,10 +154,6 @@ body {
 .gc-foot { margin: 0 12px; padding: 6px 0 10px; border-top: 2px solid var(--gc-frame); text-align: center; font-size: 12px; font-weight: 600; color: var(--gc-blue); }
 .ink { font-family: var(--font-ink), cursive; color: var(--gc-pen, #1e3a9e); }
 /* A torn-off check used as a button. */
-.check-tab {
-  background: #d4ecdd; color: #2d4f9e; box-shadow: 0 10px 24px rgba(0,0,0,.28);
-  border-top: 3px dotted #9fb9ab;
-}
 .ticket-edge {
   -webkit-mask: radial-gradient(circle at 8px 0, transparent 5px, #000 5.5px) -8px 0 / 16px 100%;
   mask: radial-gradient(circle at 8px 0, transparent 5px, #000 5.5px) -8px 0 / 16px 100%;
