@@ -62,11 +62,12 @@ form → `/api/contact`) · `sitemap.xml` · `robots.txt`. `/gallery` → `/stor
   (`html[data-bar-up]`). Footer is padded so the bar never covers it. Not shown from `md` up.
 - **"From the kitchen" gallery** `home/kitchen-gallery.tsx` (server: live prices from Akelt `/api/menu`,
   matched by exact menu name) + `photo-gallery.tsx` (client): 40 real plates (`GALLERY` in site.ts, with
-  real pixel sizes), filter chips (All / Breakfast / Hashes & tacos / Benedicts / Lunch), masonry columns,
-  first 12 then "See all", mint guest-check price tags. Tap → full-screen `<dialog>` viewer (arrows,
+  real pixel sizes) in a **full-bleed, endlessly revolving strip** (~32 px/s; rendered 3× and kept in the
+  middle copy so the loop has no seam; the twins are aria-hidden). Pauses on hover / focus / touch /
+  off-screen / reduced motion; takes mouse drags (a drag never counts as a tap), swipes, trackpad
+  scrolls and ‹ › arrows. Mint guest-check price tags. Tap → full-screen `<dialog>` viewer (arrows,
   swipe, ←/→, Esc, pauses Lenis via `window.__lenis`) with the price and "Order this", which closes the
-  viewer and opens the Akelt ordering popup (a modal dialog would otherwise sit on top of it). Replaced
-  the jukebox (2026-10-26, JP's call).
+  viewer and opens the Akelt ordering popup. Replaced the jukebox, then the masonry grid (JP, 2026-10-26).
 - **Neon** utilities (`.neon`, `.neon-tube`, flicker), **checkerboard floor** in perspective,
   **chrome strips** with a glint, **guest checks** modeled on the restaurant's real FMP 2-part pads (`components/guest-check.tsx`,
   `.guest-check`: mint sheet, blue "Guest Check", Date/Table/Guests/Server boxes, red number, course
@@ -101,8 +102,8 @@ Google Business Profile hours check.
 1. Vercel project + env (Akelt origin, site URL, Resend keys), then DNS cut-over from Webflow.
 2. Shoot the real griddle pair on a tripod (raw → cooked, same frame) and drop into `assets-src/`.
 3. Cut the 2018 film into a "33 seconds inside Southside" section + 3–5 s micro-loops (see notes).
-4. ~~Specials board~~ — the board was removed from the site (2026-10-26). The Akelt specials editor
-   (branch `ccr-7b8d5726-vgq10m`, migration 0015) has no consumer here now; decide whether to drop it.
+4. ~~Specials board~~ — dropped entirely (2026-10-26): the board is off the site and the Akelt specials
+   editor was removed before it ever shipped.
 5. DNS cut-over: move southsidediner.net from Webflow to Vercel; keep the redirects above.
 
 ## Hard-won lessons

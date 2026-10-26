@@ -40,25 +40,30 @@ test.describe('southsidediner.net', () => {
     await expect(tag).toHaveCount(0);
   });
 
-  test('From the kitchen: filter, open the viewer, step through, order, close', async ({ page }) => {
+  test('From the kitchen: the strip revolves, takes the arrows, and opens the viewer', async ({ page }) => {
     await page.goto('/');
-    const photos = page.getByRole('list', { name: 'Photos' }).getByRole('button');
-    await expect(photos).toHaveCount(12); // the opening spread
-    await page.getByRole('button', { name: /See all 40 plates/ }).click();
-    await expect(photos).toHaveCount(40);
+    const track = page.locator('[data-gallery-track]');
+    await track.scrollIntoViewIfNeeded();
+    await page.mouse.move(2, 2); // not hovering: it should drift on its own
+    const left = () => track.evaluate((e) => e.scrollLeft);
+    const a = await left();
+    await expect.poll(left, { timeout: 4000 }).toBeGreaterThan(a + 10);
 
-    await page.getByRole('button', { name: 'Benedicts', exact: true }).click();
-    await expect(photos).toHaveCount(3);
-    await photos.first().click();
+    const b = await left();
+    await page.getByRole('button', { name: 'Scroll photos forward' }).click();
+    await expect.poll(left, { timeout: 3000 }).toBeGreaterThan(b + 200);
+
+    // Only the real copy is in the accessibility tree (the loop's twins are aria-hidden).
+    await expect(page.getByRole('button', { name: /^Pastrami Benedict.*view larger$/ })).toHaveCount(1);
+    await page.getByRole('button', { name: /^Pastrami Benedict.*view larger$/ }).click();
     const viewer = page.getByRole('dialog');
-    await expect(viewer).toBeVisible();
     await expect(viewer).toContainText('Pastrami Benedict');
-    await expect(viewer).toContainText('1 / 3');
+    await expect(viewer).toContainText('7 / 40');
     await page.keyboard.press('ArrowRight');
-    await expect(viewer).toContainText('Eggs Benedict Florentine');
+    await expect(viewer).toContainText('Athenian Breakfast');
     await page.keyboard.press('ArrowLeft');
-    await page.keyboard.press('ArrowLeft'); // wraps around
-    await expect(viewer).toContainText('Spartan Benedict');
+    await page.keyboard.press('ArrowLeft');
+    await expect(viewer).toContainText('Reuben Tacos');
     await expect(viewer.getByRole('link', { name: /Order/ })).toHaveAttribute('data-akelt-order', '/');
     await page.keyboard.press('Escape');
     await expect(viewer).toBeHidden();

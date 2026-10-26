@@ -31,13 +31,14 @@ export async function KitchenGallery() {
               From the kitchen
             </h2>
             <p className="mt-3 max-w-xl text-white/70">
-              Real plates, photographed in our kitchen. Tap one to see it up close, then order it.
+              Real plates, photographed in our kitchen.
             </p>
           </div>
         </div>
-        <div className="mt-8">
-          <PhotoGallery items={items} />
-        </div>
+      </div>
+      {/* Full-bleed: the strip runs edge to edge; its controls line up with the page column. */}
+      <div className="relative mt-8">
+        <PhotoGallery items={items} />
       </div>
     </section>
   );
