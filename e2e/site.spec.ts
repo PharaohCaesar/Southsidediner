@@ -36,6 +36,21 @@ test.describe('southsidediner.net', () => {
     await expect(page.getByLabel('Receipt with address and hours')).toContainText('THANK YOU, COME AGAIN', { timeout: 8000 });
   });
 
+  test('every "Order online" button opens the real ordering page in the popup', async ({ page }) => {
+    const akelt = process.env.NEXT_PUBLIC_AKELT_ORIGIN ?? 'http://localhost:3000';
+    await page.goto('/');
+    await page.waitForFunction(() => (window as unknown as { Akelt?: unknown }).Akelt, null, { timeout: 20_000 });
+    // React renders a bare data-akelt-order as "true"; every marker must carry a real path.
+    const markers = await page.$$eval('[data-akelt-order]', (els) => els.map((e) => e.getAttribute('data-akelt-order')));
+    expect(markers.length).toBeGreaterThan(2);
+    expect(markers.every((m) => m === '/')).toBe(true);
+    await page.getByRole('banner').getByRole('link', { name: 'Order online' }).click();
+    await expect(page.getByRole('dialog', { name: /Order online from/ })).toBeVisible();
+    await expect(page.locator('iframe.akelt-frame')).toHaveAttribute('src', `${akelt}/`);
+    await expect(page.frameLocator('iframe.akelt-frame').getByRole('heading', { level: 1 })).toContainText('Southside Diner', { timeout: 20_000 });
+    expect(page.url()).not.toContain('akelt'); // visitor never left the diner site
+  });
+
   test('menu page renders the Akelt menu with prices', async ({ page }) => {
     await page.goto('/menu');
     await expect(page.getByRole('heading', { level: 1 })).toContainText('The menu');

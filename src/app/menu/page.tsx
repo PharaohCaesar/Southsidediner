@@ -42,7 +42,7 @@ export default async function MenuPage() {
           <div className="ticket ticket-edge mx-auto max-w-md px-8 pb-8 pl-12 pt-8 text-center">
             <p className="text-lg uppercase">The menu is being written up.</p>
             <p className="mt-2 text-sm">Give us a call — {SITE.phone}</p>
-            <a href={SITE.akeltOrigin} data-akelt-order className="mt-4 inline-block rounded bg-cherry px-5 py-3 text-sm font-bold uppercase tracking-wider text-white">
+            <a href={SITE.akeltOrigin} data-akelt-order="/" className="mt-4 inline-block rounded bg-cherry px-5 py-3 text-sm font-bold uppercase tracking-wider text-white">
               See the menu on the ordering page
             </a>
           </div>
@@ -65,7 +65,7 @@ export default async function MenuPage() {
                 <ul className="mt-6 grid gap-x-10 gap-y-5 md:grid-cols-2">
                   {c.items.map((it) => (
                     <li key={it.id} className={it.available ? '' : 'opacity-50'}>
-                      <a href={`${SITE.akeltOrigin}/`} data-akelt-order className="group flex gap-4">
+                      <a href={`${SITE.akeltOrigin}/`} data-akelt-order="/" className="group flex gap-4">
                         {it.image_url && (
                           <span className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl shadow">
                             <Image src={it.image_url} alt="" fill sizes="80px" className="kodachrome object-cover transition group-hover:scale-105" />

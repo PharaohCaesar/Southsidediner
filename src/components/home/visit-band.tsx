@@ -30,7 +30,7 @@ export function VisitBand() {
           <p className="border-b-[3px] border-double border-cherry/70 pb-1 text-xs font-bold uppercase tracking-[.2em]">Guest check</p>
           <p className="mt-3 text-lg uppercase">Order ahead</p>
           <p className="mt-1 text-sm">Skip the line. Ready in about 20 minutes.</p>
-          <a href={SITE.akeltOrigin} data-akelt-order data-bell className="mt-4 inline-flex min-h-[44px] items-center rounded bg-cherry px-5 text-sm font-bold uppercase tracking-[.12em] text-white hover:bg-cherry-deep">
+          <a href={SITE.akeltOrigin} data-akelt-order="/" data-bell className="mt-4 inline-flex min-h-[44px] items-center rounded bg-cherry px-5 text-sm font-bold uppercase tracking-[.12em] text-white hover:bg-cherry-deep">
             Start an order
           </a>
         </div>

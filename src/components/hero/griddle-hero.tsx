@@ -253,7 +253,7 @@ export function GriddleHero() {
             <div className="pointer-events-auto mt-5 flex flex-wrap items-center gap-3">
               <a
                 href={SITE.akeltOrigin}
-                data-akelt-order
+                data-akelt-order="/"
                 data-bell
                 className="ticket ticket-edge inline-flex min-h-[52px] items-center px-6 pl-10 font-ticket text-[15px] uppercase tracking-[.12em] text-carbon transition hover:-translate-y-0.5 hover:rotate-[-1deg]"
               >

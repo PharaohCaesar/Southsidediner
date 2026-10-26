@@ -30,7 +30,7 @@ export function Footer() {
             <Link href="/story" className="hover:text-mustard">Our story</Link>
             <Link href="/jobs" className="hover:text-mustard">Join the team</Link>
             <Link href="/contact" className="hover:text-mustard">Find us</Link>
-            <a href={SITE.akeltOrigin} data-akelt-order className="hover:text-mustard">Order online</a>
+            <a href={SITE.akeltOrigin} data-akelt-order="/" className="hover:text-mustard">Order online</a>
             <a href={SITE.mapsUrl} target="_blank" rel="noreferrer" className="hover:text-mustard">Directions</a>
           </nav>
           <div className="flex flex-wrap gap-3 text-sm">

@@ -91,7 +91,7 @@ export function Jukebox() {
           <div className="mt-6 text-center lg:text-left">
             <h3 className="font-display text-4xl uppercase tracking-wide">{dish.name}</h3>
             <p className="mx-auto mt-2 max-w-md text-white/75 lg:mx-0">{dish.blurb}</p>
-            <a href={SITE.akeltOrigin} data-akelt-order data-bell className="mt-4 inline-flex min-h-[46px] items-center rounded-full bg-cherry px-6 font-display text-[15px] uppercase tracking-[.12em] text-white shadow-[0_0_18px_rgba(200,16,46,.6)] hover:bg-[#e01636]">
+            <a href={SITE.akeltOrigin} data-akelt-order="/" data-bell className="mt-4 inline-flex min-h-[46px] items-center rounded-full bg-cherry px-6 font-display text-[15px] uppercase tracking-[.12em] text-white shadow-[0_0_18px_rgba(200,16,46,.6)] hover:bg-[#e01636]">
               Order this
             </a>
           </div>
